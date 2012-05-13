@@ -21,6 +21,7 @@ Thumbs.db
 *.scc
 *.udproj
 *.udprojx
+*.secret.cs
 [Bb]in
 [Dd]ebug*/
 *.lib
@@ -29,4 +30,4 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
-assemblyCompressor.snk
+*.snk

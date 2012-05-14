@@ -13,18 +13,6 @@ namespace wunderbar.Api.dataContracts {
 			newTasks = new List<taskType>();
 			requiredTasks = new List<taskType>();
 			requiredLists = new List<listType>();
-
-			newTasks.Add(new taskType {
-			                          	listId = 106437,
-										userId = 29253,
-										Deleted = 0,
-										Done = 0,
-										Important = 1,
-										Name = "Hi there little boggers!",
-										Id = 0,
-										Version = 0,
-										Note = ""
-			                          });
 		}
 
 		[DataMember(Name = "new_tasks")]

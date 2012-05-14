@@ -30,6 +30,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>wunderbar.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,11 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dataContracts\dataBaseType.cs" />
+    <Compile Include="dataContracts\listCollection.cs" />
     <Compile Include="dataContracts\listType.cs" />
     <Compile Include="dataContracts\syncTableStep1a.cs" />
     <Compile Include="dataContracts\syncTableStep1b.cs" />
     <Compile Include="dataContracts\syncTableStep2a.cs" />
     <Compile Include="dataContracts\syncTableStep2b.cs" />
+    <Compile Include="dataContracts\taskCollection.cs" />
     <Compile Include="dataContracts\taskType.cs" />
     <Compile Include="digestCredentials.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
@@ -67,7 +75,9 @@
     <Compile Include="wunderClient.cs" />
     <Compile Include="wunderRequestException.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="wunderbar.snk" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -14,41 +14,71 @@ using wunderbar.Api.dataContracts;
 namespace wunderbar.Api {
 	public sealed class wunderClient : IDisposable {
 		private readonly httpClient _httpClient;
+		private readonly digestCredentials _credentials;
+
+		private const string _lsTasksFilename = "Tasks.json";
+		private const string _lsListsFilename = "Lists.json";
 
 		private bool _loggedIn;
 
 		public wunderClient() {
-			Credentials = new digestCredentials();
+			_credentials = new digestCredentials();
 			_httpClient = new httpClient();
-			Lists = new List<listType>();
-			Tasks = new List<taskType>();
+			Lists = new listCollection();
+			Tasks = new taskCollection();
 
 			_loggedIn = false;
 		}
 
-		public digestCredentials Credentials { get; set; }
+		/// <summary>Returns all Lists from the Wunderlist-Account.</summary>
+		public listCollection Lists { get; private set; }
 
-		public List<listType> Lists { get; private set; }
+		/// <summary>Returns all Tasks from the Wunderlist-Account.</summary>
+		public taskCollection Tasks { get; private set; }
 
-		public List<taskType> Tasks { get; private set; }
+		/// <summary>Gets or Sets the Directory in which the Tasks and Lists should be cached.</summary>
+		public string localStorageDirectory { get; set; }
 
-		public bool Login() {
+		/// <summary>Tries to Login to Wunderlist.</summary>
+		/// <param name="email">Your E-Mailaddress.</param>
+		/// <param name="password">Your Password.</param>
+		/// <returns>Returns true if the Login was successfull, otherwise false.</returns>
+		public bool Login(string email, string password) {
+			_credentials.eMail = email;
+			_credentials.Password = password;
+
 			var result = _httpClient.httpPost<loginRequest, baseResponse>(new loginRequest {
-			                                                                               	eMail = Credentials.eMail,
-			                                                                               	Password = Credentials.Password
+			                                                                               	eMail = _credentials.eMail,
+			                                                                               	Password = _credentials.Password
 			                                                                               });
 			_loggedIn = (result.statusCode == statusCodes.LOGIN_SUCCESS);
+			if(_loggedIn)
+				readLocalStorage();
+
 			return _loggedIn;
 		}
 
+		/// <summary>Clears the local Storage from the currently logged in User.</summary>
+		public void removeLocalStorage() {
+			if(!_loggedIn)
+				throw new InvalidOperationException("You need to Log-In before you can purge any Data.");
+
+			if(Directory.Exists(localStoragePath))
+				Directory.Delete(localStoragePath, true);
+		}
+
+		/// <summary>Synchronizes the LocalStorage with the Wunderlist-Servers.</summary>
 		public void Synchronize() {
+
+			if(!_loggedIn)
+				throw new InvalidOperationException("You need to call Login(email, password) first before you can Start Synchronizing.");
 
 			/*
 				Synchronization Step 1
 			 */
 			var step1Request = new syncStep1Request {
-			                                        	eMail = Credentials.eMail,
-														Password = Credentials.Password
+			                                        	eMail = _credentials.eMail,
+														Password = _credentials.Password
 			                                        };
 			step1Request.syncTable.Lists.AddRange(Lists.Where(l => l.Id > 0));
 			step1Request.syncTable.Tasks.AddRange(Tasks.Where(t => t.Id > 0));
@@ -59,12 +89,12 @@ namespace wunderbar.Api {
 				throw new synchronizationException(step1Request.Step, step1Result.statusCode);
 
 			//Add new Lists and Tasks
-			//TODO: The data in new* can also existing in this lists, check if exists and then update instead of insert
-			if(step1Result.syncTable.newLists != null)
-				Lists.AddRange(step1Result.syncTable.newLists);
+			if(step1Result.syncTable != null && step1Result.syncTable.newLists != null)
+				step1Result.syncTable.newLists.ForEach(l => Lists.addOrUpdateList(l));
 
-			if (step1Result.syncTable.newTasks != null)
-					Tasks.AddRange(step1Result.syncTable.newTasks);
+			if (step1Result.syncTable != null && step1Result.syncTable.newTasks != null)
+				step1Result.syncTable.newTasks.ForEach(t => Tasks.addOrUpdateTask(t));
+
 			//TODO: Update existing Lists with the data from synced_lists
 
 
@@ -72,22 +102,22 @@ namespace wunderbar.Api {
 				Synchronization Step 2
 			 */
 			var step2Request = new syncStep2Request {
-			                                        	eMail = Credentials.eMail,
-			                                        	Password = Credentials.Password
+			                                        	eMail = _credentials.eMail,
+			                                        	Password = _credentials.Password
 			                                        };
 			step2Request.syncTable.newTasks.AddRange(Tasks.Where(t => t.Id <= 0));
 
-			if(step1Result.syncTable.requiredTasks != null)
+			if(step1Result.syncTable != null && step1Result.syncTable.requiredTasks != null)
 				step2Request.syncTable.requiredTasks.AddRange(
 						from task in Tasks 
-						where step1Result.syncTable.requiredTasks.Any(requiredTask => requiredTask.Id == task.Id)
+						where step1Result.syncTable.requiredTasks.Any(requiredTask => requiredTask == task.Id)
 						select task
 					);
 
-			if(step1Result.syncTable.requiredLists != null)
+			if(step1Result.syncTable != null && step1Result.syncTable.requiredLists != null)
 				step2Request.syncTable.requiredLists.AddRange(
 						from list in Lists
-						where step1Result.syncTable.requiredLists.Any(requiredList => requiredList.Id == list.Id)
+						where step1Result.syncTable.requiredLists.Any(requiredList => requiredList == list.Id)
 						select list
 					);
 
@@ -95,6 +125,63 @@ namespace wunderbar.Api {
 			if (step2Result.statusCode != statusCodes.SYNC_SUCCESS)
 				throw new synchronizationException(step2Request.Step, step2Result.statusCode);
 
+			//Seems like everything worked, save the Tasks and Lists locally
+			writeLocalStorage();
+		}
+
+		/// <summary>Writes Lists and Tasks to the LocalStorage in the FileSystem.</summary>
+		private void writeLocalStorage() {
+
+			//If there is no StorageLocation we can't load anything...
+			if (string.IsNullOrWhiteSpace(localStorageDirectory))
+				return;
+
+			string lsDirectory = localStoragePath;
+			if (!Directory.Exists(lsDirectory))
+				Directory.CreateDirectory(lsDirectory);
+
+			serializeJson<taskCollection>(Path.Combine(lsDirectory, _lsTasksFilename), Tasks);
+			serializeJson<listCollection>(Path.Combine(lsDirectory, _lsListsFilename), Lists);
+		}
+
+		/// <summary>Reads previously saved Lists and Tasks.</summary>
+		private void readLocalStorage() {
+
+			//No Storagelocation given
+			if (string.IsNullOrWhiteSpace(localStorageDirectory))
+				return;
+
+			string lsDirectory = localStoragePath;
+			if (!Directory.Exists(lsDirectory))
+				return;
+
+			string lsTasksPath = Path.Combine(lsDirectory, _lsTasksFilename);
+			string lsListsPath = Path.Combine(lsDirectory, _lsListsFilename);
+
+			if (File.Exists(lsTasksPath))
+				Tasks = deserializeJson<taskCollection>(lsTasksPath);
+			if (File.Exists(lsListsPath))
+				Lists = deserializeJson<listCollection>(lsListsPath);
+		}
+
+		private string localStoragePath {
+			get { return Path.Combine(localStorageDirectory, _credentials.eMail.generateMD5Hash()); }
+		}
+
+		private void serializeJson<T>(string path, T graph) {
+			using (var fStream = new FileStream(path, FileMode.Create)) {
+				//TODO: Add Encryption
+				var serializer = new DataContractJsonSerializer(typeof (T));
+				serializer.WriteObject(fStream, graph);
+			}
+		}
+
+		private T deserializeJson<T>(string path) {
+			using (var fStream = File.OpenRead(path)) {
+				var serializer = new DataContractJsonSerializer(typeof (T));
+				//TODO: Add Decryption
+				return (T) serializer.ReadObject(fStream);
+			}
 		}
 
 		#region IDisposable Members

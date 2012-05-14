@@ -13,8 +13,8 @@ namespace wunderbar.Api.dataContracts {
 			newLists = new List<listType>();
 			newTasks = new List<taskType>();
 			syncedLists = new List<listType>();
-			requiredTasks = new List<taskType>();
-			requiredLists = new List<listType>();
+			requiredTasks = new List<int>();
+			requiredLists = new List<int>();
 		}
 
 		[DataMember(Name = "new_lists")]
@@ -27,10 +27,10 @@ namespace wunderbar.Api.dataContracts {
 		public List<listType> syncedLists { get; set; }
 
 		[DataMember(Name = "required_tasks")]
-		public List<taskType> requiredTasks { get; set; }
+		public List<int> requiredTasks { get; set; }
 
 		[DataMember(Name = "required_lists")]
-		public List<listType> requiredLists { get; set; }
+		public List<int> requiredLists { get; set; }
 
 	}
 }

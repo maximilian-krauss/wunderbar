@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("wunderbar.App")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("http://coffeeInjection.com")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("wunderbar.App")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyCopyright("Copyright © 2012 Maximilian Krauss")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

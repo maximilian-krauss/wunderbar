@@ -10,10 +10,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>wunderbar.App</RootNamespace>
     <AssemblyName>wunderbar.App</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -40,9 +41,17 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>wunderbar.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>application.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification">
+      <HintPath>..\wunderbar.Libs\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -56,18 +65,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Compile Include="Core\trayContextTypes.cs" />
+    <Compile Include="Data\applicationSettings.cs" />
+    <Compile Include="Ui\Dialogs\trayWindow.xaml.cs">
+      <DependentUpon>trayWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Ui\Dialogs\loginDialog.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <Compile Include="Core\applicationSession.cs" />
+    <Compile Include="Core\baseController.cs" />
+    <Compile Include="Core\trayController.cs" />
+    <Compile Include="Data\baseModel.cs" />
+    <Compile Include="Data\taskModel.cs" />
+    <Compile Include="Ui\Dialogs\loginDialog.xaml.cs">
+      <DependentUpon>loginDialog.xaml</DependentUpon>
     </Compile>
+    <Page Include="Ui\Dialogs\trayWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -93,6 +115,29 @@
     </None>
     <AppDesigner Include="Properties\" />
     <None Include="wunderbar.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\wunderbar.Api\wunderbar.Api.csproj">
+      <Project>{444B2335-0476-4852-8B2B-13EAF6FA53F2}</Project>
+      <Name>wunderbar.Api</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Icons\tray.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\loadingAnimation\loadingAnimation0.png" />
+    <Resource Include="Gfx\Images\loadingAnimation\loadingAnimation1.png" />
+    <Resource Include="Gfx\Images\loadingAnimation\loadingAnimation2.png" />
+    <Resource Include="Gfx\Images\loadingAnimation\loadingAnimation3.png" />
+    <Resource Include="Gfx\Images\loadingAnimation\loadingAnimation4.png" />
+    <Resource Include="Gfx\Images\loadingAnimation\loadingAnimation5.png" />
+    <Resource Include="Gfx\Images\loadingAnimation\loadingAnimation6.png" />
+    <Resource Include="Gfx\Images\loadingAnimation\loadingAnimation7.png" />
+    <Resource Include="Gfx\Images\loadingAnimation\loadingAnimation8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="application.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

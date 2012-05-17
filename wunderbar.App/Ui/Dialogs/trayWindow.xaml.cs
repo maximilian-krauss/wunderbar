@@ -9,16 +9,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using wunderbar.App.Core;
 
-namespace wunderbar.App {
+namespace wunderbar.App.Ui.Dialogs {
 	/// <summary>
-	/// Interaction logic for MainWindow.xaml
+	/// Interaction logic for trayWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window {
-		public MainWindow() {
+	public partial class trayWindow : Window {
+		private readonly applicationSession _session;
+		public trayWindow() {
 			InitializeComponent();
+			_session = new applicationSession(this);
+			_session.runApplication();
 		}
 	}
 }

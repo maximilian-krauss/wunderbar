@@ -28,8 +28,7 @@ namespace wunderbar.Api {
 			httpRequest.Method = WebRequestMethods.Http.Post;
 			httpRequest.ContentType = "application/x-www-form-urlencoded";
 			httpRequest.Accept = "application/json";
-			httpRequest.UserAgent = string.Format("wunderbar;v{0}", Assembly.GetExecutingAssembly().GetName().Version);
-			httpRequest.Headers.Add("hi", "read this? Then contact me: max@coffeeinjection.com");
+			httpRequest.UserAgent = string.Format("wunderbar/v{0}", Assembly.GetExecutingAssembly().GetName().Version);
 			httpRequest.ContentLength = requestData.Length;
 			httpRequest.GetRequestStream().Write(requestData, 0, requestData.Length);
 

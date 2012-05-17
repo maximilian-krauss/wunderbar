@@ -39,6 +39,9 @@ namespace wunderbar.Api {
 		/// <summary>Gets or Sets the Directory in which the Tasks and Lists should be cached.</summary>
 		public string localStorageDirectory { get; set; }
 
+		/// <summary>Returns if the User is logged in.</summary>
+		public bool loggedIn { get { return _loggedIn; } }
+
 		/// <summary>Tries to Login to Wunderlist.</summary>
 		/// <param name="email">Your E-Mailaddress.</param>
 		/// <param name="password">Your Password.</param>
@@ -165,7 +168,7 @@ namespace wunderbar.Api {
 		}
 
 		private string localStoragePath {
-			get { return Path.Combine(localStorageDirectory, _credentials.eMail.generateMD5Hash()); }
+			get { return Path.Combine(localStorageDirectory, _credentials.eMail.ToLowerInvariant().generateMD5Hash()); }
 		}
 
 		private void serializeJson<T>(string path, T graph) {
@@ -187,7 +190,7 @@ namespace wunderbar.Api {
 		#region IDisposable Members
 
 		public void Dispose() {
-			throw new NotImplementedException();
+			_credentials.Password = string.Empty;
 		}
 
 		#endregion

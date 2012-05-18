@@ -6,6 +6,7 @@ using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using Hardcodet.Wpf.TaskbarNotification;
 using System.Drawing;
 using wunderbar.Api.dataContracts;
@@ -19,7 +20,7 @@ namespace wunderbar.App.Core {
 		private Timer _animationTimer;
 		private int _currentAnimationIndex;
 		private Icon _animationBaseIcon;
-
+		
 		private MenuItem mnuExit;
 		private MenuItem mnuSettings;
 		private MenuItem mnuAbout;
@@ -48,16 +49,17 @@ namespace wunderbar.App.Core {
 
 			mnuSettings = new MenuItem {Header = "Settings..."};
 			mnuAbout = new MenuItem {Header = "About..."};
+			mnuAbout.Click += (o, e) => Ui.Dialogs.aboutDialog.Instance.ShowDialog();
 			mnuSeparatorMain = new Separator();
 
 			//Non-Persistent Items
-			mnuLogin = new MenuItem {Header = "Login"};
+			mnuLogin = new MenuItem {Header = "Login", Icon = readImageControlFromResource("auth")};
 			mnuLogin.Click += (o, e) => Session.Login();
 
-			mnuLogout = new MenuItem {Header = "Logout"};
+			mnuLogout = new MenuItem {Header = "Logout", Icon = readImageControlFromResource("auth")};
 			mnuLogout.Click += (o, e) => Session.Logout();
 
-			mnuSynchronize = new MenuItem {Header = "Synchronize"};
+			mnuSynchronize = new MenuItem {Header = "Synchronize", Icon = readImageControlFromResource("cloud_sync")};
 			mnuSynchronize.Click += (o, e) => Session.Synchronize();
 			
 			_trayIcon.ContextMenu.Items.Add(mnuSeparatorMain);
@@ -81,6 +83,8 @@ namespace wunderbar.App.Core {
 		}
 
 		void _animationTimer_Elapsed(object sender, ElapsedEventArgs e) {
+
+			//TODO: Cache this generated Icons, this is wasted performance...
 			using (var bitmap = new Bitmap(16, 16)) {
 				using (var g = Graphics.FromImage(bitmap)) {
 					g.DrawImage(_animationBaseIcon.ToBitmap(), 0, 0, 16, 16);
@@ -128,16 +132,20 @@ namespace wunderbar.App.Core {
 			var listRoot = new MenuItem {Header = list.Name};
 			
 			//Add 'Add new Task' Item
-			var mnuAddNewTask = new MenuItem {Header = "New Task"};
-			//TODO: Add Handler
+			var mnuAddNewTask = new MenuItem {Header = "Add new Task", Icon = readImageControlFromResource("Tasks/plus")};
+			mnuAddNewTask.Click += (o, e) => Session.showTask(list.Id);
 			listRoot.Items.Add(mnuAddNewTask);
 
 			foreach (var task in Session.wunderClient.Tasks.Where(t => t.listId == list.Id && t.Done == 0 && t.Deleted == 0).OrderByDescending(t => t.Position)) {
 				var mnuTask = new MenuItem {
 				                           	Header = task.Name,
-				                           	DataContext = new taskModel(task)
+				                           	DataContext = task,
+				                           	Icon = (task.Important == 1 ? readImageControlFromResource("Tasks/important") : null)
 				                           };
-				//TODO: Add Handler
+				
+				var taskLocal = task; //Looks awkward but it's important to copy that variable, see: http://confluence.jetbrains.net/display/ReSharper/Access+to+modified+closure
+				mnuTask.Click += (o, e) => Session.showTask(taskLocal);
+
 				listRoot.Items.Add(mnuTask);
 			}
 
@@ -157,6 +165,13 @@ namespace wunderbar.App.Core {
 			Stream imageStream = Application.GetResourceStream(
 					new Uri(string.Format("pack://application:,,,/wunderbar.App;component/Gfx/Images/{0}.png", resourceName))).Stream;
 			return System.Drawing.Image.FromStream(imageStream);
+		}
+		private System.Windows.Controls.Image readImageControlFromResource(string resourceName) {
+			return new System.Windows.Controls.Image {
+			                                         	Source =
+			                                         		new BitmapImage(
+			                                         		new Uri(string.Format("pack://application:,,,/wunderbar.App;component/Gfx/Images/{0}.png",resourceName)))
+			                                         };
 		}
 
 		public override void Dispose() {

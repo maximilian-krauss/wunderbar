@@ -13,5 +13,12 @@
 			<Setter Property="Label.HorizontalAlignment" Value="Left"></Setter>
 		</Style>
 
+		<Style x:Key="BorderControls" TargetType="{x:Type Border}">
+			<Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}" />
+			<Setter Property="BorderBrush" Value="{x:Static SystemColors.ControlLightBrush}" />
+			<Setter Property="BorderThickness" Value="0 1 0 0" />
+			<Setter Property="Margin" Value="0 10 0 0" />
+		</Style>
+		
 	</Application.Resources>
 </Application>

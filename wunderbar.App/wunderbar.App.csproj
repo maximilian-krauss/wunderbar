@@ -67,9 +67,21 @@
     </ApplicationDefinition>
     <Compile Include="Core\trayContextTypes.cs" />
     <Compile Include="Data\applicationSettings.cs" />
+    <Compile Include="Data\Converter\booleanConverter.cs" />
+    <Compile Include="Data\Converter\unixDateTimeConverter.cs" />
+    <Compile Include="Ui\Dialogs\aboutDialog.xaml.cs">
+      <DependentUpon>aboutDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Dialogs\taskDialog.xaml.cs">
+      <DependentUpon>taskDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\Dialogs\trayWindow.xaml.cs">
       <DependentUpon>trayWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Ui\Dialogs\aboutDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Ui\Dialogs\loginDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -82,10 +94,13 @@
     <Compile Include="Core\baseController.cs" />
     <Compile Include="Core\trayController.cs" />
     <Compile Include="Data\baseModel.cs" />
-    <Compile Include="Data\taskModel.cs" />
     <Compile Include="Ui\Dialogs\loginDialog.xaml.cs">
       <DependentUpon>loginDialog.xaml</DependentUpon>
     </Compile>
+    <Page Include="Ui\Dialogs\taskDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Ui\Dialogs\trayWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -138,6 +153,19 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="application.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\Tasks\important.png" />
+    <Resource Include="Gfx\Images\Tasks\star.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\cloud_sync.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\auth.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\Tasks\plus.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

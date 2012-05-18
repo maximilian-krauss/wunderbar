@@ -10,6 +10,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using wunderbar.App.Data;
+using wunderbar.Api.dataContracts;
+using wunderbar.App.Ui.Dialogs;
 
 namespace wunderbar.App.Core {
 	internal sealed class applicationSession : IDisposable {
@@ -22,7 +24,7 @@ namespace wunderbar.App.Core {
 			                                	localStorageDirectory = applicationDataStorageDirectory
 			                                };
 
-			//This should initilaize at last...
+			//This should initialized at last...
 			trayController = new trayController(this);
 		}
 
@@ -32,7 +34,7 @@ namespace wunderbar.App.Core {
 		public wunderClient wunderClient { get; private set; }
 
 		/// <summary>Gets Access to the TrayIcon for Updating the NotifyIcon and displaying some Textbubbles.</summary>
-		public trayController trayController { get; private set; }
+		internal trayController trayController { get; private set; }
 
 		/// <summary>Returns the MainWindow-Dummy which handles the TrayIconstuff.</summary>
 		public Window mainWindow { get; private set; }
@@ -47,7 +49,7 @@ namespace wunderbar.App.Core {
 		public Version applicationVersion { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
 
 		/// <summary>Returns an Option that indicates which Items from the ContextMenu should be displayed.</summary>
-		public trayContextTypes trayContextType{
+		internal trayContextTypes trayContextType{
 			get {
 				if (!wunderClient.loggedIn)
 					return trayContextTypes.loginRequired;
@@ -80,7 +82,7 @@ namespace wunderbar.App.Core {
 
 		/// <summary>Displays the Logindialog and tries to Login to Wunderlist.</summary>
 		public void Login() {
-			var login = new Ui.Dialogs.loginDialog();
+			var login = new loginDialog();
 			login.ShowDialog();
 			if (login.DialogResult.HasValue && login.DialogResult.Value)
 				Login(login.Credentials);
@@ -100,6 +102,7 @@ namespace wunderbar.App.Core {
 				loginTask.Wait();
 			}
 			catch (Exception exc) {
+				//TODO: Notify and Log error
 				onTrayContextUpdateRequired(EventArgs.Empty);
 				trayController.stopAnimation();
 			}
@@ -137,6 +140,7 @@ namespace wunderbar.App.Core {
 					syncTask.Wait();
 				}
 				catch (Exception exc) {
+					//TODO: Notify and Log error
 					onTrayContextUpdateRequired(EventArgs.Empty);
 				}
 			}
@@ -144,6 +148,20 @@ namespace wunderbar.App.Core {
 				trayController.stopAnimation();
 				onTrayContextUpdateRequired(EventArgs.Empty);
 			}
+		}
+
+		public void showTask(int listId) {
+			showTask(new taskType {listId = listId, Name = "Enter a Name for the new Task"});
+		}
+		public void showTask(taskType task) {
+			var dialog = new taskDialog {ListsItemSource = wunderClient.Lists, DataContext = task};
+			dialog.ShowDialog();
+
+			//If this Task already exists on the Server, we have to increase the Version.
+			if (task.Id > 0)
+				task.Version++;
+
+			onTrayContextUpdateRequired(EventArgs.Empty);
 		}
 
 		#region Event Invocations

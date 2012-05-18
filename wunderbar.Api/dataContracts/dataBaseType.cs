@@ -9,6 +9,8 @@ namespace wunderbar.Api.dataContracts {
 	[DataContract]
 	public abstract class dataBaseType {
 
+		//TODO: Implement INotifyPropertyChanged
+
 		[DataMember(Name = "deleted")]
 		public int Deleted { get; set; }
 

@@ -8,6 +8,8 @@ namespace wunderbar.Api.dataContracts {
 
 	[DataContract]
 	public sealed class listType : dataBaseType {
+		
+		//TODO: Implement INotifyPropertyChanged
 
 		public listType() {
 			Inbox = 0;

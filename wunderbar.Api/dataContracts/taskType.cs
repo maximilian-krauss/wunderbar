@@ -9,14 +9,16 @@ namespace wunderbar.Api.dataContracts {
 	[DataContract]
 	public sealed class taskType : dataBaseType {
 
+		//TODO: Implement INotifyPropertyChanged
+
 		[DataMember(Name = "date")]
-		public int Date { get; set; }
+		public long Date { get; set; }
 
 		[DataMember(Name = "done")]
 		public int Done { get; set; }
 
 		[DataMember(Name = "done_date")]
-		public int doneDate { get; set; }
+		public long doneDate { get; set; }
 
 		[DataMember(Name = "important")]
 		public int Important { get; set; }

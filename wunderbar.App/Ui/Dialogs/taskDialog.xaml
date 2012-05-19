@@ -74,8 +74,8 @@
 					</Style>
 				</WrapPanel.Resources>
 				<Button Click="btnClose_Click">Close</Button>
-				<Button>Mark as Done</Button>
-				<Button>Postpone</Button>
+				<Button Click="btnDone_Click">Mark as Done</Button>
+				<Button Click="btnPostpone_Click">Postpone</Button>
 			</WrapPanel>
 		</Border>
 		

@@ -1,8 +1,56 @@
 ﻿<Window x:Class="wunderbar.App.Ui.Dialogs.aboutDialog"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="aboutDialog" Height="300" Width="300">
-    <Grid>
-        
-    </Grid>
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		Title="About wunderbar..." Height="Auto" Width="Auto" SizeToContent="WidthAndHeight"
+		WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="/application.ico">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="120" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		
+		<Grid Grid.Column="1" Margin="0 0 10 0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition />
+				<RowDefinition />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+			
+			<Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource LabelMainInstruction}">wunderbar</Label>
+			
+			<Label Grid.Row="1" Grid.Column="0">Version:</Label>
+			<Label Grid.Row="1" Grid.Column="1" Name="lblVersion">1.0.0.0</Label>
+			
+			<Label Grid.Row="2" Grid.Column="0">Copyright:</Label>
+			<Label Grid.Row="2" Grid.Column="1">
+				<Hyperlink Click="Hyperlink_Click" NavigateUri="http://coffeeInjection.com">Maximilian Krauss - coffeeInjection</Hyperlink>
+			</Label>
+			
+			<TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 10" FontWeight="Bold" Foreground="Maroon" TextWrapping="Wrap" MaxWidth="300">
+				Imporant Notice: This is Pre-Release Software. Use it on your own risk.
+			</TextBlock>
+			
+		</Grid>
+		
+		<Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Style="{StaticResource BorderControls}">
+			<WrapPanel FlowDirection="RightToLeft" Margin="6">
+				<WrapPanel.Resources>
+					<Style TargetType="{x:Type Button}">
+						<Setter Property="Padding" Value="10 2" />
+						<Setter Property="Margin" Value=" 4 4" />
+					</Style>
+				</WrapPanel.Resources>
+				<Button Click="Button_Click">Close</Button>
+			</WrapPanel>
+		</Border>
+	</Grid>
 </Window>

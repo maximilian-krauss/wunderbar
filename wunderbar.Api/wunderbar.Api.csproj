@@ -58,6 +58,7 @@
     <Compile Include="dataContracts\taskCollection.cs" />
     <Compile Include="dataContracts\taskType.cs" />
     <Compile Include="digestCredentials.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="httpClient.cs" />
     <Compile Include="httpClientAttributes\httpClientIgnorePropertyAttribute.cs" />

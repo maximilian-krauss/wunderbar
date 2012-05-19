@@ -4,6 +4,7 @@ using System.Linq;
 namespace wunderbar.Api.dataContracts {
 	public class taskCollection : List<taskType> {
 		public void addOrUpdateTask(taskType task) {
+			task.trackChanges = true;
 			if (this.Any(t => t.Id == task.Id)) {
 				var existingTask = this.First(t => t.Id == task.Id);
 				existingTask.Date = task.Date;

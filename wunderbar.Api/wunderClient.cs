@@ -73,15 +73,16 @@ namespace wunderbar.Api {
 		/// <summary>Synchronizes the LocalStorage with the Wunderlist-Servers.</summary>
 		public void Synchronize() {
 
-			if(!_loggedIn)
-				throw new InvalidOperationException("You need to call Login(email, password) first before you can Start Synchronizing.");
+			if (!_loggedIn)
+				throw new InvalidOperationException(
+					"You need to call Login(email, password) first before you can Start Synchronizing.");
 
 			/*
 				Synchronization Step 1
 			 */
 			var step1Request = new syncStep1Request {
 			                                        	eMail = _credentials.eMail,
-														Password = _credentials.Password
+			                                        	Password = _credentials.Password
 			                                        };
 			step1Request.syncTable.Lists.AddRange(Lists.Where(l => l.Id > 0));
 			step1Request.syncTable.Tasks.AddRange(Tasks.Where(t => t.Id > 0));
@@ -92,13 +93,18 @@ namespace wunderbar.Api {
 				throw new synchronizationException(step1Request.Step, step1Result.statusCode);
 
 			//Add new Lists and Tasks
-			if(step1Result.syncTable != null && step1Result.syncTable.newLists != null)
+			if (step1Result.syncTable != null && step1Result.syncTable.newLists != null)
 				step1Result.syncTable.newLists.ForEach(l => Lists.addOrUpdateList(l));
 
 			if (step1Result.syncTable != null && step1Result.syncTable.newTasks != null)
 				step1Result.syncTable.newTasks.ForEach(t => Tasks.addOrUpdateTask(t));
 
 			//TODO: Update existing Lists with the data from synced_lists
+			//TODO: Done, needs to be tested
+			if (step1Result.syncTable != null && step1Result.syncTable.syncedLists != null &&
+			    step1Result.syncTable.syncedLists.Count > 0)
+				for (int i = 0; i < step1Result.syncTable.syncedLists.Count; i++)
+					step1Request.syncTable.newLists[i].Id = step1Result.syncTable.syncedLists[i];
 
 
 			/*
@@ -110,23 +116,29 @@ namespace wunderbar.Api {
 			                                        };
 			step2Request.syncTable.newTasks.AddRange(Tasks.Where(t => t.Id <= 0));
 
-			if(step1Result.syncTable != null && step1Result.syncTable.requiredTasks != null)
+			if (step1Result.syncTable != null && step1Result.syncTable.requiredTasks != null)
 				step2Request.syncTable.requiredTasks.AddRange(
-						from task in Tasks 
-						where step1Result.syncTable.requiredTasks.Any(requiredTask => requiredTask == task.Id)
-						select task
+					from task in Tasks
+					where step1Result.syncTable.requiredTasks.Any(requiredTask => requiredTask == task.Id)
+					select task
 					);
 
-			if(step1Result.syncTable != null && step1Result.syncTable.requiredLists != null)
+			if (step1Result.syncTable != null && step1Result.syncTable.requiredLists != null)
 				step2Request.syncTable.requiredLists.AddRange(
-						from list in Lists
-						where step1Result.syncTable.requiredLists.Any(requiredList => requiredList == list.Id)
-						select list
+					from list in Lists
+					where step1Result.syncTable.requiredLists.Any(requiredList => requiredList == list.Id)
+					select list
 					);
 
 			var step2Result = _httpClient.httpPost<syncStep2Request, syncStep2Response>(step2Request);
 			if (step2Result.statusCode != statusCodes.SYNC_SUCCESS)
 				throw new synchronizationException(step2Request.Step, step2Result.statusCode);
+
+			//TODO: Needs some testing...
+			if (step2Result.syncTable != null && step2Result.syncTable.syncedTasks != null &&
+			    step2Result.syncTable.syncedTasks.Count > 0)
+				for (int i = 0; i < step2Result.syncTable.syncedTasks.Count; i++)
+					step2Request.syncTable.newTasks[i].Id = step2Result.syncTable.syncedTasks[i];
 
 			//Seems like everything worked, save the Tasks and Lists locally
 			writeLocalStorage();
@@ -165,6 +177,11 @@ namespace wunderbar.Api {
 				Tasks = deserializeJson<taskCollection>(lsTasksPath);
 			if (File.Exists(lsListsPath))
 				Lists = deserializeJson<listCollection>(lsListsPath);
+
+			//Activate Changetracking
+			Tasks.ForEach(t => t.trackChanges = true);
+			Lists.ForEach(l => l.trackChanges = true);
+
 		}
 
 		private string localStoragePath {

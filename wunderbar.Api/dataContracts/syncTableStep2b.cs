@@ -8,8 +8,12 @@ namespace wunderbar.Api.dataContracts {
 	[DataContract]
 	public sealed class syncTableStep2b {
 
+		public syncTableStep2b() {
+			syncedTasks = new List<int>();
+		}
+
 		[DataMember(Name = "synced_tasks")]
-		public List<taskType> syncedTasks { get; set; }
+		public List<int> syncedTasks { get; set; }
 
 	}
 }

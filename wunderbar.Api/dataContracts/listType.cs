@@ -8,19 +8,20 @@ namespace wunderbar.Api.dataContracts {
 
 	[DataContract]
 	public sealed class listType : dataBaseType {
-		
-		//TODO: Implement INotifyPropertyChanged
+
+		private int _inbox;
+		private int _shared;
 
 		public listType() {
-			Inbox = 0;
-			Shared = 0;
+			_inbox = 0;
+			_shared = 0;
 		}
 
 		[DataMember(Name = "inbox")]
-		public int Inbox { get; set; }
+		public int Inbox { get { return _inbox; } set { _inbox = value; onPropertyChanged("Inbox"); } }
 
 		[DataMember(Name = "shared")]
-		public int Shared { get; set; }
+		public int Shared { get { return _shared; } set { _shared = value; onPropertyChanged("Shared"); } }
 
 	}
 }

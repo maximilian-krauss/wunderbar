@@ -14,6 +14,8 @@ using wunderbar.App.Data;
 
 namespace wunderbar.App.Core {
 	internal sealed class trayController : baseController {
+		private const int _maxHeaderLength = 25;
+
 		private readonly TaskbarIcon _trayIcon;
 		private List<Control> _persistentMenuItems; //List of Items which will never removed from the ContextMenu.
 		private System.Drawing.Image[] _loadingImages;
@@ -47,7 +49,7 @@ namespace wunderbar.App.Core {
 			mnuExit = new MenuItem {Header = "Exit"};
 			mnuExit.Click += (o, e) => Session.closeApplication();
 
-			mnuSettings = new MenuItem {Header = "Settings..."};
+			mnuSettings = new MenuItem {Header = "Settings...", IsEnabled = false};
 			mnuAbout = new MenuItem {Header = "About..."};
 			mnuAbout.Click += (o, e) => Ui.Dialogs.aboutDialog.Instance.ShowDialog();
 			mnuSeparatorMain = new Separator();
@@ -126,6 +128,8 @@ namespace wunderbar.App.Core {
 			foreach (var list in Session.wunderClient.Lists.Where(l => l.Deleted == 0).OrderByDescending(l => l.Position)) {
 				_trayIcon.ContextMenu.Items.Insert(0, buildTaskTree(list));
 			}
+
+			addDueTasks();
 		}
 
 		private MenuItem buildTaskTree(listType list) {
@@ -136,24 +140,43 @@ namespace wunderbar.App.Core {
 			mnuAddNewTask.Click += (o, e) => Session.showTask(list.Id);
 			listRoot.Items.Add(mnuAddNewTask);
 
-			foreach (var task in Session.wunderClient.Tasks.Where(t => t.listId == list.Id && t.Done == 0 && t.Deleted == 0).OrderByDescending(t => t.Position)) {
-				var mnuTask = new MenuItem {
-				                           	Header = task.Name,
-				                           	DataContext = task,
-				                           	Icon = (task.Important == 1 ? readImageControlFromResource("Tasks/important") : null)
-				                           };
-				
-				var taskLocal = task; //Looks awkward but it's important to copy that variable, see: http://confluence.jetbrains.net/display/ReSharper/Access+to+modified+closure
-				mnuTask.Click += (o, e) => Session.showTask(taskLocal);
-
-				listRoot.Items.Add(mnuTask);
-			}
+			foreach (var task in Session.wunderClient.Tasks.Where(t => t.listId == list.Id && t.Done == 0 && t.Deleted == 0).OrderByDescending(t => t.Position))
+				listRoot.Items.Add(createTaskMenuItem(task));
 
 			//Only add the Separator if there are one or more tasks in this list
 			if(listRoot.Items.Count > 1)
 				listRoot.Items.Insert(1, new Separator());
 
 			return listRoot;
+		}
+
+		private void addDueTasks() {
+			int tasksAdded = 0;
+			foreach (var task in Session.wunderClient.Tasks.Where(t => t.dueDate <= DateTime.Now.Date && t.Done == 0 && t.Deleted == 0 && t.Date > 0).OrderBy(t => t.Important)) {
+				tasksAdded++;
+				var mnuTask = createTaskMenuItem(task);
+				//Make nice headerlength
+				string header = (string) mnuTask.Header;
+				if (header.Length > _maxHeaderLength)
+					header = header.Substring(0, _maxHeaderLength) + "...";
+				mnuTask.Header = header;
+				_trayIcon.ContextMenu.Items.Insert(0, mnuTask);
+			}
+
+			if (tasksAdded > 0)
+				_trayIcon.ContextMenu.Items.Insert(tasksAdded, new Separator());
+		}
+
+		private MenuItem createTaskMenuItem(taskType task) {
+			var mnuTask = new MenuItem {
+				Header = task.Name,
+				DataContext = task,
+				Icon = (task.Important == 1 ? readImageControlFromResource("Tasks/important") : null)
+			};
+
+			var taskLocal = task; //Looks awkward but it's important to copy that variable, see: http://confluence.jetbrains.net/display/ReSharper/Access+to+modified+closure
+			mnuTask.Click += (o, e) => Session.showTask(taskLocal);
+			return mnuTask;
 		}
 
 		private Icon readIconFromResource(string iconName) {

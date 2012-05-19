@@ -8,6 +8,8 @@ namespace wunderbar.App.Data.Converter {
 	public sealed class unixDateTimeConverter : IValueConverter {
 		#region IValueConverter Members
 
+		//TODO: Redundant, see Api.Extensions.DateTimeExtensions
+
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
 			DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Local);
 			origin = origin.AddHours(TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).Hours); //This is important because the value provided by wunderlist is an UTC Date

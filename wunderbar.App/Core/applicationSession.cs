@@ -157,10 +157,6 @@ namespace wunderbar.App.Core {
 			var dialog = new taskDialog {ListsItemSource = wunderClient.Lists, DataContext = task};
 			dialog.ShowDialog();
 
-			//If this Task already exists on the Server, we have to increase the Version.
-			if (task.Id > 0)
-				task.Version++;
-
 			onTrayContextUpdateRequired(EventArgs.Empty);
 		}
 

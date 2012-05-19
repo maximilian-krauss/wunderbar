@@ -157,6 +157,10 @@ namespace wunderbar.App.Core {
 			var dialog = new taskDialog {ListsItemSource = wunderClient.Lists, DataContext = task};
 			dialog.ShowDialog();
 
+			//New Task, needs to be added to our TaskList
+			if (dialog.DialogResult.HasValue && dialog.DialogResult.Value && task.Id == 0)
+				wunderClient.Tasks.addOrUpdateTask(task);
+
 			onTrayContextUpdateRequired(EventArgs.Empty);
 		}
 

@@ -12,6 +12,7 @@ namespace wunderbar.App.Ui.Dialogs {
 			set { cboLists.ItemsSource = value; } }
 
 		private void btnClose_Click(object sender, RoutedEventArgs e) {
+			DialogResult = true;
 			Close();
 		}
 
@@ -23,6 +24,12 @@ namespace wunderbar.App.Ui.Dialogs {
 		private void btnPostpone_Click(object sender, RoutedEventArgs e) {
 			(DataContext as taskType).Postpone();
 			Close();
+		}
+
+		private void Window_Loaded(object sender, RoutedEventArgs e) {
+			if ((DataContext as taskType).Id == 0) {
+				btnClose.Content = "Add Task";
+			}
 		}
 	}
 }

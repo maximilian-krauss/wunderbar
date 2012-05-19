@@ -4,7 +4,7 @@
 		xmlns:local="clr-namespace:wunderbar.App.Data.Converter"
 		Title="wunderbar - Edit/View Task" Height="Auto" Width="Auto"
 		SizeToContent="WidthAndHeight" Icon="/application.ico"
-		WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+		WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded">
 	<Window.Resources>
 		<local:booleanConverter x:Key="boolConverter" />
 		<local:unixDateTimeConverter x:Key="dateConverter" />
@@ -73,7 +73,7 @@
 						<Setter Property="Margin" Value=" 4 4" />
 					</Style>
 				</WrapPanel.Resources>
-				<Button Click="btnClose_Click">Close</Button>
+				<Button Name="btnClose" Click="btnClose_Click">Close</Button>
 				<Button Click="btnDone_Click">Mark as Done</Button>
 				<Button Click="btnPostpone_Click">Postpone</Button>
 			</WrapPanel>

@@ -152,8 +152,7 @@ namespace wunderbar.App.Core {
 
 		private void addDueTasks() {
 			int tasksAdded = 0;
-			//TODO: Move this query to listCollection to prevent redundancy
-			foreach (var task in Session.wunderClient.Tasks.Where(t => t.dueDate <= DateTime.Now.Date && t.Done == 0 && t.Deleted == 0 && t.Date > 0).OrderBy(t => t.Important)) {
+			foreach (var task in Session.wunderClient.Tasks.dueTasks) {
 				tasksAdded++;
 				var mnuTask = createTaskMenuItem(task);
 				//Make nice headerlength

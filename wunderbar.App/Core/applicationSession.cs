@@ -16,6 +16,7 @@ using wunderbar.App.Ui.Dialogs;
 namespace wunderbar.App.Core {
 	internal sealed class applicationSession : IDisposable {
 		private const string _portableIdentifier = "portable";
+		private const string _newTaskText = "<Enter a Name for your Task>";
 		
 		public applicationSession(Window owner) {
 			mainWindow = owner;
@@ -25,6 +26,7 @@ namespace wunderbar.App.Core {
 			                                };
 
 			//This should initialized at last...
+			syncController = new syncController(this);
 			trayController = new trayController(this);
 		}
 
@@ -35,6 +37,8 @@ namespace wunderbar.App.Core {
 
 		/// <summary>Gets Access to the TrayIcon for Updating the NotifyIcon and displaying some Textbubbles.</summary>
 		internal trayController trayController { get; private set; }
+
+		public syncController syncController { get; private set; }
 
 		/// <summary>Returns the MainWindow-Dummy which handles the TrayIconstuff.</summary>
 		public Window mainWindow { get; private set; }
@@ -151,14 +155,14 @@ namespace wunderbar.App.Core {
 		}
 
 		public void showTask(int listId) {
-			showTask(new taskType {listId = listId, Name = "Enter a Name for the new Task"});
+			showTask(new taskType {listId = listId, Name = _newTaskText});
 		}
 		public void showTask(taskType task) {
 			var dialog = new taskDialog {ListsItemSource = wunderClient.Lists, DataContext = task};
 			dialog.ShowDialog();
 
 			//New Task, needs to be added to our TaskList
-			if (dialog.DialogResult.HasValue && dialog.DialogResult.Value && task.Id == 0)
+			if (dialog.DialogResult.HasValue && dialog.DialogResult.Value && task.Id == 0 && task.Name != _newTaskText)
 				wunderClient.Tasks.addOrUpdateTask(task);
 
 			onTrayContextUpdateRequired(EventArgs.Empty);

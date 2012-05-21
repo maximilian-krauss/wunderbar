@@ -9,12 +9,27 @@ using System.IO;
 namespace wunderbar.App.Data {
 	public sealed class applicationSettings : baseModel {
 		private const string _settingsFilename = "wunderbar.App.Settings.xml";
+		private const int autoSyncMinimumValue = 5;
+
+		private string _email;
+		private string _password;
+		private bool _enableAutoSync;
+		private int _autoSyncInterval;
+
+		public applicationSettings() {
+			_enableAutoSync = true;
+			_autoSyncInterval = 5;
+		}
 
 		/// <summary>Gets or Sets the eMail-Address for Wunderlist.</summary>
-		public string eMail { get; set; }
+		public string eMail { get { return _email; } set { _email = value; onPropertyChanged("eMail"); } }
 
 		/// <summary>Gets or Sets the Wunderlist Password.</summary>
-		public string Password { get; set; }
+		public string Password { get { return _password; } set { _password = value; onPropertyChanged("Password"); } }
+
+		public bool enableAutoSync { get { return _enableAutoSync; } set { _enableAutoSync = value; onPropertyChanged("enableAutoSync"); } }
+
+		public int autoSyncInterval { get { return _autoSyncInterval; } set { _autoSyncInterval = value; onPropertyChanged("autoSyncInterval"); } }
 
 		[XmlIgnore] //the Property is Private but just for being save we don't want to serialize the applicationSession
 		private applicationSession Session { get; set; }
@@ -29,6 +44,9 @@ namespace wunderbar.App.Data {
 				var serializer = new XmlSerializer(typeof (applicationSettings));
 				var instance = (applicationSettings) serializer.Deserialize(reader);
 				instance.Session = session;
+				if (instance.autoSyncInterval < autoSyncMinimumValue)
+					instance.autoSyncInterval = autoSyncMinimumValue;
+
 				return instance;
 			}
 		}

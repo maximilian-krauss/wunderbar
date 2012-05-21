@@ -140,7 +140,7 @@ namespace wunderbar.App.Core {
 			mnuAddNewTask.Click += (o, e) => Session.showTask(list.Id);
 			listRoot.Items.Add(mnuAddNewTask);
 
-			foreach (var task in Session.wunderClient.Tasks.Where(t => t.listId == list.Id && t.Done == 0 && t.Deleted == 0).OrderByDescending(t => t.Position))
+			foreach (var task in Session.wunderClient.Tasks.Where(t => t.listId == list.Id && t.Done == 0 && t.Deleted == 0).OrderBy(t => t.Position))
 				listRoot.Items.Add(createTaskMenuItem(task));
 
 			//Only add the Separator if there are one or more tasks in this list
@@ -152,6 +152,7 @@ namespace wunderbar.App.Core {
 
 		private void addDueTasks() {
 			int tasksAdded = 0;
+			//TODO: Move this query to listCollection to prevent redundancy
 			foreach (var task in Session.wunderClient.Tasks.Where(t => t.dueDate <= DateTime.Now.Date && t.Done == 0 && t.Deleted == 0 && t.Date > 0).OrderBy(t => t.Important)) {
 				tasksAdded++;
 				var mnuTask = createTaskMenuItem(task);

@@ -65,6 +65,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\syncController.cs" />
     <Compile Include="Core\trayContextTypes.cs" />
     <Compile Include="Data\applicationSettings.cs" />
     <Compile Include="Data\Converter\booleanConverter.cs" />

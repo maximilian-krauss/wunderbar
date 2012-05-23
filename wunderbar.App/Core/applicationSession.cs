@@ -12,11 +12,12 @@ using System.Threading;
 using wunderbar.App.Data;
 using wunderbar.Api.dataContracts;
 using wunderbar.App.Ui.Dialogs;
+using wunderbar.Api.Extensions;
 
 namespace wunderbar.App.Core {
 	internal sealed class applicationSession : IDisposable {
 		private const string _portableIdentifier = "portable";
-		private const string _newTaskText = "<Enter a Name for your Task>";
+		private const string _newTaskText = "<Enter a name for your task>";
 		
 		public applicationSession(Window owner) {
 			mainWindow = owner;
@@ -51,6 +52,9 @@ namespace wunderbar.App.Core {
 
 		/// <summary>Returns the current Applicationversion.</summary>
 		public Version applicationVersion { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
+
+		/// <summary>Returns the last error which occoured while logging in or syncing.</summary>
+		public Exception lastError { get; private set; }
 
 		/// <summary>Returns an Option that indicates which Items from the ContextMenu should be displayed.</summary>
 		internal trayContextTypes trayContextType{
@@ -96,27 +100,31 @@ namespace wunderbar.App.Core {
 		public void Login(digestCredentials credentials) {
 			
 			//Perform login
+			lastError = null;
 			trayController.startAnimation();
 			var loginTask = Task.Factory.StartNew(() => {
 			                                      	Thread.Sleep(5000);
 			                                      	if (!wunderClient.Login(credentials.eMail, credentials.Password))
-			                                      		throw new Exception("Login failed");
+			                                      		throw new Exception("Login failed. Username and or Password are invalid.");
 			                                      });
 			try {
 				loginTask.Wait();
 			}
 			catch (Exception exc) {
-				//TODO: Notify and Log error
+				lastError = exc.LowestException();
 				onTrayContextUpdateRequired(EventArgs.Empty);
 				trayController.stopAnimation();
+				trayController.notifyError(string.Format("There was an error while logging into Wunderlist:\r\n{0}", lastError.Message));
 			}
 
-			//Save Credentials
-			Settings.eMail = credentials.eMail;
-			Settings.Password = credentials.Password;
+			//Execute synchronize.
+			if (wunderClient.loggedIn) {
+				//Save Credentials
+				Settings.eMail = credentials.eMail;
+				Settings.Password = credentials.Password;
 
-			//Execute synchronize. If the Login was not successfull, synchronizazon won't do anything (except stopping the animation)
-			Synchronize();
+				Synchronize();
+			}
 		}
 
 		/// <summary>Clears cached Tasks and Lists and removes any saved Credentials.</summary>
@@ -132,6 +140,7 @@ namespace wunderbar.App.Core {
 
 		/// <summary>Performs the whole Synchronization from Tasks and Lists.</summary>
 		public void Synchronize() {
+			lastError = null;
 			try {
 				if (!wunderClient.loggedIn)
 					return;
@@ -144,8 +153,10 @@ namespace wunderbar.App.Core {
 					syncTask.Wait();
 				}
 				catch (Exception exc) {
-					//TODO: Notify and Log error
+					lastError = exc.LowestException();
 					onTrayContextUpdateRequired(EventArgs.Empty);
+					trayController.notifyError(string.Format("There was an problem while syncing your tasks and lists:\r\n{0}",
+					                                         lastError.Message));
 				}
 			}
 			finally { //Make sure that the Trayanimation will always stop

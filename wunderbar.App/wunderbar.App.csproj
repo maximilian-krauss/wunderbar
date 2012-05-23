@@ -73,6 +73,9 @@
     <Compile Include="Ui\Dialogs\aboutDialog.xaml.cs">
       <DependentUpon>aboutDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\Dialogs\exceptionDialog.xaml.cs">
+      <DependentUpon>exceptionDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\Dialogs\taskDialog.xaml.cs">
       <DependentUpon>taskDialog.xaml</DependentUpon>
     </Compile>
@@ -80,6 +83,10 @@
       <DependentUpon>trayWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Ui\Dialogs\aboutDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\Dialogs\exceptionDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -167,6 +174,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Gfx\Images\Tasks\plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\error.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

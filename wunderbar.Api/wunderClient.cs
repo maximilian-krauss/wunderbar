@@ -68,6 +68,8 @@ namespace wunderbar.Api {
 
 			if(Directory.Exists(localStoragePath))
 				Directory.Delete(localStoragePath, true);
+
+			_loggedIn = false;
 		}
 
 		/// <summary>Synchronizes the LocalStorage with the Wunderlist-Servers.</summary>

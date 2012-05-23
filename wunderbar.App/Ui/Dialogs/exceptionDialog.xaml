@@ -1,0 +1,49 @@
+﻿<Window x:Class="wunderbar.App.Ui.Dialogs.exceptionDialog"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		Title="exceptionDialog" Height="Auto" Width="Auto" SizeToContent="WidthAndHeight"
+		WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+	<Window.Resources>
+		<Style TargetType="{x:Type TextBlock}">
+			<Setter Property="Margin" Value="5" />
+			<Setter Property="TextWrapping" Value="WrapWithOverflow" />
+			<Setter Property="MaxWidth" Value="400" />
+		</Style>
+	</Window.Resources>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		
+		<StackPanel Margin="6" Grid.Column="0" Grid.Row="0">
+			<Label Margin="5 0" Style="{StaticResource LabelMainInstruction}">Holy moly, looks like the App just crashed</Label>
+			<TextBlock TextWrapping="WrapWithOverflow" MaxWidth="400">You've just unlocked a new Achievement: Report bug to developer. This enables you to send magic reports over the internet. Please make use of it, it helps a lot.</TextBlock>
+			<Label>Report or die</Label>
+		</StackPanel>
+		<Expander Grid.Column="0" Grid.Row="1" Header="Details, please" Margin="5">
+			<StackPanel Margin="0">
+				<Label>Errormessage:</Label>
+				<TextBlock Text="{Binding Message}" />
+			</StackPanel>
+		</Expander>
+
+		<Border Style="{StaticResource BorderControls}" Grid.Column="0" Grid.Row="2">
+			<WrapPanel FlowDirection="RightToLeft" Margin="6">
+				<WrapPanel.Resources>
+					<Style TargetType="{x:Type Button}">
+						<Setter Property="Padding" Value="10 2" />
+						<Setter Property="Margin" Value=" 4 4" />
+					</Style>
+				</WrapPanel.Resources>
+				<Button>dafuq</Button>
+				<Button>Send report</Button>
+			</WrapPanel>
+		</Border>
+		
+	</Grid>
+</Window>

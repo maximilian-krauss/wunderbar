@@ -5,14 +5,14 @@
 		WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="/application.ico">
 	<Grid>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="120" />
+			<ColumnDefinition Width="130" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		
+				
 		<Grid Grid.Column="1" Margin="0 0 10 0">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
@@ -36,7 +36,7 @@
 			</Label>
 			
 			<TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 10" FontWeight="Bold" Foreground="Maroon" TextWrapping="Wrap" MaxWidth="300">
-				Imporant Notice: This is Pre-Release Software. Use it on your own risk.
+				Imporant Notice: This is Pre-Release software. Use it on your own risk.
 			</TextBlock>
 			
 		</Grid>

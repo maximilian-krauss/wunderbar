@@ -25,7 +25,6 @@ namespace wunderbar.App.Core {
 		}
 
 		private void  setupSyncTimer() {
-			//TODO: Remove if working
 			_tmrSync.Interval = (Session.Settings.autoSyncInterval * 60 * 1000);
 			_tmrSync.Enabled = Session.Settings.enableAutoSync;
 		}

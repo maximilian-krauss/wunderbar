@@ -118,25 +118,26 @@ namespace wunderbar.App.Core {
 			var state = Session.trayContextType;
 			if (state == trayContextTypes.loginRequired) {
 				_trayIcon.ContextMenu.Items.Insert(0, mnuLogin);
-				return;
 			}
+			else {
+				_trayIcon.ContextMenu.Items.Insert(0, mnuLogout);
+				_trayIcon.ContextMenu.Items.Insert(0, mnuSynchronize);
 
-			_trayIcon.ContextMenu.Items.Insert(0, mnuLogout);
-			_trayIcon.ContextMenu.Items.Insert(0, mnuSynchronize);
+				//Add Tasks and Lists
+				foreach (var list in Session.wunderClient.Lists.Where(l => l.Deleted == 0).OrderByDescending(l => l.Position)) {
+					_trayIcon.ContextMenu.Items.Insert(0, buildTaskTree(list));
+				}
 
-			//Add Tasks and Lists
-			foreach (var list in Session.wunderClient.Lists.Where(l => l.Deleted == 0).OrderByDescending(l => l.Position)) {
-				_trayIcon.ContextMenu.Items.Insert(0, buildTaskTree(list));
+				addDueTasks();
 			}
-
-			addDueTasks();
+			addError();
 		}
 
 		private MenuItem buildTaskTree(listType list) {
 			var listRoot = new MenuItem {Header = list.Name};
 			
 			//Add 'Add new Task' Item
-			var mnuAddNewTask = new MenuItem {Header = "Add new Task", Icon = readImageControlFromResource("Tasks/plus")};
+			var mnuAddNewTask = new MenuItem {Header = "Add new task", Icon = readImageControlFromResource("Tasks/plus")};
 			mnuAddNewTask.Click += (o, e) => Session.showTask(list.Id);
 			listRoot.Items.Add(mnuAddNewTask);
 
@@ -166,8 +167,24 @@ namespace wunderbar.App.Core {
 			if (tasksAdded > 0)
 				_trayIcon.ContextMenu.Items.Insert(tasksAdded, new Separator());
 		}
+		
+		public void notifyError(string message) {
+			_trayIcon.ShowBalloonTip(Session.applicationName, message, BalloonIcon.Error);
+		}
+
+		/// <summary>Adds an "Error"-item on top of the ContextMenu if an error occoured</summary>
+		private void addError() {
+			if (Session.lastError == null)
+				return;
+
+			_trayIcon.ContextMenu.Items.Insert(0, new MenuItem {
+			                                                   	Header = string.Format("Couldn't connect: {0}", Session.lastError.Message),
+																Icon = readImageControlFromResource("error")
+			                                                   });
+		}
 
 		private MenuItem createTaskMenuItem(taskType task) {
+			//TODO: If task is overdue, mark menuitem red
 			var mnuTask = new MenuItem {
 				Header = task.Name,
 				DataContext = task,

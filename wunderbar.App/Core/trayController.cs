@@ -11,12 +11,15 @@ using Hardcodet.Wpf.TaskbarNotification;
 using System.Drawing;
 using wunderbar.Api.dataContracts;
 using wunderbar.App.Data;
+using System.Windows.Media;
 
 namespace wunderbar.App.Core {
 	internal sealed class trayController : baseController {
 		private const int _maxHeaderLength = 25;
 
 		private readonly TaskbarIcon _trayIcon;
+		private readonly BrushConverter _brushConverter;
+		private const string _overdueColor = "#7F0000";
 		private List<Control> _persistentMenuItems; //List of Items which will never removed from the ContextMenu.
 		private System.Drawing.Image[] _loadingImages;
 		private Timer _animationTimer;
@@ -36,6 +39,7 @@ namespace wunderbar.App.Core {
 			                            	Icon = readIconFromResource("tray"),
 			                            	ToolTipText = string.Format("{0} Version {1}", session.applicationName, session.applicationVersion)
 			                            };
+			_brushConverter = new BrushConverter();
 			initializeMenu();
 			initializeAnimation();
 			Session.trayContextUpdateRequired += (o, e) => updateMenu();
@@ -184,12 +188,13 @@ namespace wunderbar.App.Core {
 		}
 
 		private MenuItem createTaskMenuItem(taskType task) {
-			//TODO: If task is overdue, mark menuitem red
 			var mnuTask = new MenuItem {
 				Header = task.Name,
 				DataContext = task,
 				Icon = (task.Important == 1 ? readImageControlFromResource("Tasks/important") : null)
 			};
+			if (task.isOverdue)
+				mnuTask.Foreground = (System.Windows.Media.Brush) _brushConverter.ConvertFrom(_overdueColor);
 
 			var taskLocal = task; //Looks awkward but it's important to copy that variable, see: http://confluence.jetbrains.net/display/ReSharper/Access+to+modified+closure
 			mnuTask.Click += (o, e) => Session.showTask(taskLocal);

@@ -50,6 +50,12 @@ namespace wunderbar.Api.dataContracts {
 			set { Date = (long) value.ToUnixTimeStamp(); }
 		}
 
+		[IgnoreDataMember]
+		[httpClientIgnoreProperty]
+		public bool isOverdue {
+			get { return (Date > 0 && Done == 0 && dueDate.Date < DateTime.Now.Date); }
+		}
+
 		/// <summary>Postpones this Task for one day.</summary>
 		public void Postpone() {
 			if (Date > 0) {

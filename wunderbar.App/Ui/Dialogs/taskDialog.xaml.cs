@@ -31,5 +31,13 @@ namespace wunderbar.App.Ui.Dialogs {
 				btnClose.Content = "Add Task";
 			}
 		}
+
+		private void Button_Click(object sender, RoutedEventArgs e) {
+			ppDate.IsOpen = true;
+		}
+
+		private void btnNoDate_Click(object sender, RoutedEventArgs e) {
+			(DataContext as taskType).Date = 0;
+		}
 	}
 }

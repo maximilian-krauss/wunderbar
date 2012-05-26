@@ -56,14 +56,14 @@ namespace wunderbar.Api.dataContracts {
 			get { return (Date > 0 && Done == 0 && dueDate.Date < DateTime.Now.Date); }
 		}
 
-		/// <summary>Postpones this Task for one day.</summary>
+		/// <summary>Postpones this task for one day.</summary>
 		public void Postpone() {
 			if (Date > 0) {
 				Date = (long) DateTime.Now.AddDays(1).Date.ToUnixTimeStamp();
 			}
 		}
 
-		/// <summary>Sets the Flag "done".</summary>
+		/// <summary>Sets the flag "done".</summary>
 		public void markAsDone() {
 			Done = 1;
 		}

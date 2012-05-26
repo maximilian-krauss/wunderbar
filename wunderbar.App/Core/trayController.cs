@@ -7,6 +7,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification;
 using System.Drawing;
 using wunderbar.Api.dataContracts;
@@ -20,7 +21,7 @@ namespace wunderbar.App.Core {
 		private readonly TaskbarIcon _trayIcon;
 		private readonly BrushConverter _brushConverter;
 		private const string _overdueColor = "#7F0000";
-		private List<Control> _persistentMenuItems; //List of Items which will never removed from the ContextMenu.
+		private List<Control> _persistentMenuItems; //List of items which will never removed from the ContextMenu.
 		private System.Drawing.Image[] _loadingImages;
 		private Timer _animationTimer;
 		private int _currentAnimationIndex;
@@ -36,9 +37,9 @@ namespace wunderbar.App.Core {
 
 		public trayController(applicationSession session):base(session) {
 			_trayIcon = new TaskbarIcon {
-			                            	Icon = readIconFromResource("tray"),
-			                            	ToolTipText = string.Format("{0} Version {1}", session.applicationName, session.applicationVersion)
-			                            };
+											Icon = readIconFromResource("tray"),
+											ToolTipText = string.Format("{0} Version {1}", session.applicationName, session.applicationVersion)
+										};
 			_brushConverter = new BrushConverter();
 			initializeMenu();
 			initializeAnimation();
@@ -66,7 +67,8 @@ namespace wunderbar.App.Core {
 			mnuLogout.Click += (o, e) => Session.Logout();
 
 			mnuSynchronize = new MenuItem {Header = "Synchronize", Icon = readImageControlFromResource("cloud_sync")};
-			mnuSynchronize.Click += (o, e) => Session.Synchronize();
+			mnuSynchronize.Click += (o, e) =>
+				Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => Session.Synchronize()));
 			
 			_trayIcon.ContextMenu.Items.Add(mnuSeparatorMain);
 			_trayIcon.ContextMenu.Items.Add(mnuAbout);
@@ -182,9 +184,9 @@ namespace wunderbar.App.Core {
 				return;
 
 			_trayIcon.ContextMenu.Items.Insert(0, new MenuItem {
-			                                                   	Header = string.Format("Couldn't connect: {0}", Session.lastError.Message),
+																Header = string.Format("Couldn't connect: {0}", Session.lastError.Message),
 																Icon = readImageControlFromResource("error")
-			                                                   });
+															   });
 		}
 
 		private MenuItem createTaskMenuItem(taskType task) {
@@ -213,10 +215,10 @@ namespace wunderbar.App.Core {
 		}
 		private System.Windows.Controls.Image readImageControlFromResource(string resourceName) {
 			return new System.Windows.Controls.Image {
-			                                         	Source =
-			                                         		new BitmapImage(
-			                                         		new Uri(string.Format("pack://application:,,,/wunderbar.App;component/Gfx/Images/{0}.png",resourceName)))
-			                                         };
+														Source =
+															new BitmapImage(
+															new Uri(string.Format("pack://application:,,,/wunderbar.App;component/Gfx/Images/{0}.png",resourceName)))
+													 };
 		}
 
 		public override void Dispose() {

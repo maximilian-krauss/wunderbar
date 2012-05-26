@@ -20,7 +20,7 @@ This Application is licened under The Code Project Open License (CPOL) 1.02 whic
 * Display the number of due Tasks inside the Trayicon
 * Global Hotkeys for creating new Tasks and Lists
 * Option to delete Tasks
-* A smarter and faster way to create new Tasks
+* A smarter and faster way to create new Tasks **[smart enough]**
 * Proxysupport (it already supports Proxys which were set up global by Internet Settings)
 * Add new Lists from the Tray-ContextMenu
 * Implement shared Lists

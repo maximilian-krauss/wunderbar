@@ -88,7 +88,7 @@ namespace wunderbar.Api {
 			                                        };
 			step1Request.syncTable.Lists.AddRange(Lists.Where(l => l.Id > 0));
 			step1Request.syncTable.Tasks.AddRange(Tasks.Where(t => t.Id > 0));
-			step1Request.syncTable.newLists.AddRange(Lists.Where(l => l.Id <= 0));
+			step1Request.syncTable.newLists.AddRange(Lists.Where(l => l.Id == 0));
 
 			var step1Result = _httpClient.httpPost<syncStep1Request, syncStep1Response>(step1Request);
 			if (step1Result.statusCode != statusCodes.SYNC_SUCCESS)
@@ -101,12 +101,10 @@ namespace wunderbar.Api {
 			if (step1Result.syncTable != null && step1Result.syncTable.newTasks != null)
 				step1Result.syncTable.newTasks.ForEach(t => Tasks.addOrUpdateTask(t));
 
-			//TODO: Update existing Lists with the data from synced_lists
-			//TODO: Done, needs to be tested
 			if (step1Result.syncTable != null && step1Result.syncTable.syncedLists != null &&
 			    step1Result.syncTable.syncedLists.Count > 0)
 				for (int i = 0; i < step1Result.syncTable.syncedLists.Count; i++)
-					step1Request.syncTable.newLists[i].Id = step1Result.syncTable.syncedLists[i];
+					step1Request.syncTable.newLists[i].Id = step1Result.syncTable.syncedLists[i].Id;
 
 
 			/*
@@ -116,7 +114,7 @@ namespace wunderbar.Api {
 			                                        	eMail = _credentials.eMail,
 			                                        	Password = _credentials.Password
 			                                        };
-			step2Request.syncTable.newTasks.AddRange(Tasks.Where(t => t.Id <= 0));
+			step2Request.syncTable.newTasks.AddRange(Tasks.Where(t => t.Id == 0));
 
 			if (step1Result.syncTable != null && step1Result.syncTable.requiredTasks != null)
 				step2Request.syncTable.requiredTasks.AddRange(
@@ -136,11 +134,10 @@ namespace wunderbar.Api {
 			if (step2Result.statusCode != statusCodes.SYNC_SUCCESS)
 				throw new synchronizationException(step2Request.Step, step2Result.statusCode);
 
-			//TODO: Needs some testing...
 			if (step2Result.syncTable != null && step2Result.syncTable.syncedTasks != null &&
 			    step2Result.syncTable.syncedTasks.Count > 0)
 				for (int i = 0; i < step2Result.syncTable.syncedTasks.Count; i++)
-					step2Request.syncTable.newTasks[i].Id = step2Result.syncTable.syncedTasks[i];
+					step2Request.syncTable.newTasks[i].Id = step2Result.syncTable.syncedTasks[i].Id;
 
 			//Seems like everything worked, save the Tasks and Lists locally
 			writeLocalStorage();

@@ -19,6 +19,10 @@ namespace wunderbar.Api.dataContracts {
 		private int _push;
 		private int _pushTS;
 
+		public taskType() {
+			Note = string.Empty;
+		}
+
 		[DataMember(Name = "date")]
 		public long Date { get { return _date; } set { _date = value; onPropertyChanged("Date"); } }
 

@@ -84,6 +84,7 @@ namespace wunderbar.App.Core {
 
 		/// <summary>Closes and Disposes all Applicationmodules.</summary>
 		public void closeApplication() {
+			//TODO: Save unsychronized tasks and lists
 			Settings.Save();
 			mainWindow.Close();
 		}

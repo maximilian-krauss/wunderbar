@@ -2,9 +2,9 @@
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:local="clr-namespace:wunderbar.App.Data.Converter"
-		Title="wunderbar - Edit/View Task" Height="Auto" Width="Auto"
+		Title="wunderbar - Edit/View Task" MinHeight="350" MinWidth="500"
 		SizeToContent="WidthAndHeight" Icon="/application.ico"
-		WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded">
+		WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded">
 	<Window.Resources>
 		<local:booleanConverter x:Key="boolConverter" />
 		<local:unixDateTimeConverter x:Key="dateConverter" />
@@ -36,7 +36,7 @@
 			<!-- Taskname -->
 			<StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
 				<TextBox Foreground="#006E12" FontSize="16" Text="{Binding Name}"
-						 MaxWidth="600" Margin="10 0 10 5" BorderBrush="Transparent"
+						 Margin="10 0 10 5" BorderBrush="Transparent"
 						 ToolTip="Enter a Name for your Task"/>
 				<Border BorderBrush="{x:Static SystemColors.ControlLightBrush}" BorderThickness="0 0 0 1" />
 			</StackPanel>
@@ -85,7 +85,7 @@
 			<TextBox Grid.Column="1" Grid.Row="4"
 					 TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"
 					 HorizontalScrollBarVisibility="Auto" Text="{Binding Note}" Margin="10 0"
-					 Height="60" MaxWidth="300" MinHeight="80" HorizontalAlignment="Stretch" />
+					 MinHeight="80" HorizontalAlignment="Stretch" />
 		</Grid>
 
 		<!-- Controls -->
@@ -98,8 +98,8 @@
 					</Style>
 				</WrapPanel.Resources>
 				<Button Name="btnClose" Click="btnClose_Click" x:FieldModifier="private">Close</Button>
-				<Button Click="btnDone_Click">Mark as Done</Button>
-				<Button Click="btnPostpone_Click">Postpone</Button>
+				<Button Name="btnDone" Click="btnDone_Click" x:FieldModifier="private">Mark as done</Button>
+				<Button Name="btnPostpone" Click="btnPostpone_Click" x:FieldModifier="private">Postpone</Button>
 			</WrapPanel>
 		</Border>
 		

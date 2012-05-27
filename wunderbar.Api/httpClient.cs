@@ -34,7 +34,18 @@ namespace wunderbar.Api {
 
 			var httpResponse = (HttpWebResponse) httpRequest.GetResponse();
 			TResponse response;
-			using (var responseStream = httpResponse.GetResponseStream()) {
+
+			//Ugly workaround to prevent empty keyfields in a json string because the DataContractJsonSerializer doesn't
+			//support things like that { items:[{"":"123"}] }.
+			string responseString;
+			Encoding contentEncoding = string.IsNullOrEmpty(httpResponse.ContentEncoding)
+			                           	? Encoding.UTF8
+			                           	: Encoding.GetEncoding(httpResponse.ContentEncoding);
+			using (var responseReader = new StreamReader(httpResponse.GetResponseStream(), contentEncoding))
+				responseString = responseReader.ReadToEnd();
+			responseString = responseString.Replace("\"\":", "\"id\":");
+
+			using (var responseStream = new MemoryStream(contentEncoding.GetBytes(responseString))) {
 				var responseSerializer = new DataContractJsonSerializer(typeof (TResponse));
 				response = (TResponse) responseSerializer.ReadObject(responseStream);
 			}

@@ -23,7 +23,6 @@
 		<StackPanel Margin="6" Grid.Column="0" Grid.Row="0">
 			<Label Margin="5 0" Style="{StaticResource LabelMainInstruction}">Holy moly, looks like the App just crashed</Label>
 			<TextBlock TextWrapping="WrapWithOverflow" MaxWidth="400">You've just unlocked a new Achievement: Report bug to developer. This enables you to send magic reports over the internet. Please make use of it, it helps a lot.</TextBlock>
-			<Label>Report or die</Label>
 		</StackPanel>
 		<Expander Grid.Column="0" Grid.Row="1" Header="Details, please" Margin="5">
 			<StackPanel Margin="0">

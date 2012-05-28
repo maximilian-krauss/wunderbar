@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using wunderbar.App.Core;
+using wunderbar.Api.Extensions;
 using System.Xml.Serialization;
 using System.IO;
+using System.Reflection;
 
 namespace wunderbar.App.Data {
-	public sealed class applicationSettings : baseModel {
+	public sealed class applicationSettings : baseModel, ICloneable {
 		private const string _settingsFilename = "wunderbar.App.Settings.xml";
+		private static readonly byte[] _token;
 		private const int autoSyncMinimumValue = 5;
 
 		private string _email;
@@ -17,6 +20,9 @@ namespace wunderbar.App.Data {
 		private int _autoSyncInterval;
 		private bool _showDueTasksInTrayIcon;
 
+		static applicationSettings() {
+			_token = Assembly.GetExecutingAssembly().GetName().GetPublicKey();
+		}
 		public applicationSettings() {
 			_enableAutoSync = true;
 			_autoSyncInterval = 5;
@@ -48,6 +54,7 @@ namespace wunderbar.App.Data {
 				var serializer = new XmlSerializer(typeof (applicationSettings));
 				var instance = (applicationSettings) serializer.Deserialize(reader);
 				instance.Session = session;
+				instance.Password = instance.Password.aesDecrypt(_token);
 				if (instance.autoSyncInterval < autoSyncMinimumValue)
 					instance.autoSyncInterval = autoSyncMinimumValue;
 
@@ -60,9 +67,20 @@ namespace wunderbar.App.Data {
 
 			using (var writer = new StreamWriter(Path.Combine(Session.applicationDataStorageDirectory, _settingsFilename), false, Encoding.UTF8)) {
 				var serializer = new XmlSerializer(typeof (applicationSettings));
-				serializer.Serialize(writer, this);
+				var clone = Clone() as applicationSettings;
+				clone.Password = clone.Password.aesEncrypt(_token);
+
+				serializer.Serialize(writer, clone);
 			}
 		}
 
+
+		#region ICloneable Members
+
+		public object Clone() {
+			return MemberwiseClone();
+		}
+
+		#endregion
 	}
 }

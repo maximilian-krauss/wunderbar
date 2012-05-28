@@ -189,7 +189,6 @@ namespace wunderbar.Api {
 
 		private void serializeJson<T>(string path, T graph) {
 			using (var fStream = new FileStream(path, FileMode.Create)) {
-				//TODO: Add Encryption
 				var serializer = new DataContractJsonSerializer(typeof (T));
 				serializer.WriteObject(fStream, graph);
 			}
@@ -198,7 +197,6 @@ namespace wunderbar.Api {
 		private T deserializeJson<T>(string path) {
 			using (var fStream = File.OpenRead(path)) {
 				var serializer = new DataContractJsonSerializer(typeof (T));
-				//TODO: Add Decryption
 				return (T) serializer.ReadObject(fStream);
 			}
 		}

@@ -26,7 +26,7 @@ namespace wunderbar.Api.Extensions {
 		public static string ToRelativeDate(this DateTime dateTime) {
 			//var timeSpan = DateTime.Now - dateTime.Date;
 
-			var timeSpan = dateTime.Subtract(DateTime.Now);
+			var timeSpan = dateTime.Subtract(DateTime.Now.Date);
 
 			if (timeSpan.Days == 0)
 				return "Today";

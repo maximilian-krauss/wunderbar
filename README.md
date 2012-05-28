@@ -3,8 +3,8 @@ wunderbar
 
 wunderbar is a fancy Client for [wunderlist](http://www.wunderlist.com) on Windows.
 
-Looking for something compiled?<br />
-There is only the Sourcecode available at the moment. If the Application is stable and works without hassles I'll release a compiled Version on my [Projectpage](http://coffeeinjection.com#projects).
+Looking for something compiled? <br />
+The latest Version is available for download on my [Projectpage](http://coffeeinjection.com#projects).
 
 
 ### Copyright and License

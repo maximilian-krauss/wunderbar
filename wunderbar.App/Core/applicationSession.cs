@@ -53,7 +53,7 @@ namespace wunderbar.App.Core {
 		/// <summary>Returns the current Applicationversion.</summary>
 		public Version applicationVersion { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
 
-		public string displayVersion { get { return string.Format("{0} Beta 1", applicationVersion); } }
+		public string displayVersion { get { return string.Format("{0} beta 1", applicationVersion); } }
 
 		/// <summary>Returns the last error which occoured while logging in or syncing.</summary>
 		public Exception lastError { get; private set; }

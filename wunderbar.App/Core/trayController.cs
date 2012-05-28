@@ -41,11 +41,11 @@ namespace wunderbar.App.Core {
 		public trayController(applicationSession session):base(session) {
 			_trayIcon = new TaskbarIcon {
 											Icon = readIconFromResource("tray"),
-											ToolTipText = string.Format("{0} Version {1}", session.applicationName, session.applicationVersion)
+											ToolTipText = string.Format("{0} version {1}", session.applicationName, session.displayVersion)
 										};
 			_brushConverter = new BrushConverter();
-			initializeMenu();
 			initializeAnimation();
+			initializeMenu();
 			Session.trayContextUpdateRequired += (o, e) => updateMenu();
 		}
 
@@ -161,7 +161,7 @@ namespace wunderbar.App.Core {
 				listRoot.Items.Add(createTaskMenuItem(task));
 
 			//Only add the Separator if there are one or more tasks in this list
-			if(listRoot.Items.Count > 1)
+			if (listRoot.Items.Count > 1) 
 				listRoot.Items.Insert(1, new Separator());
 
 			return listRoot;

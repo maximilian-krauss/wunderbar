@@ -39,8 +39,8 @@
 						<Setter Property="Margin" Value=" 4 4" />
 					</Style>
 				</WrapPanel.Resources>
-				<Button>dafuq</Button>
-				<Button>Send report</Button>
+				<Button Click="btnClose_Click">dafuq</Button>
+				<Button IsEnabled="False">Send report</Button>
 			</WrapPanel>
 		</Border>
 		

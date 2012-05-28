@@ -21,7 +21,7 @@ namespace wunderbar.App.Data.Converter {
 				var dt = (DateTime) value;
 				if (dt.Year >= (DateTime.Now.Year - 2)) {
 					DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-					TimeSpan diff = dt - origin;
+					TimeSpan diff = dt.Date - origin;
 					return Math.Floor((diff.TotalSeconds - TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).Seconds));
 				}
 			}

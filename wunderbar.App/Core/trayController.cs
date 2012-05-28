@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Drawing;
 using wunderbar.Api.dataContracts;
 using wunderbar.App.Data;
 using System.Windows.Media;
+using FontStyle = System.Drawing.FontStyle;
 
 namespace wunderbar.App.Core {
 	internal sealed class trayController : baseController {
@@ -22,11 +24,12 @@ namespace wunderbar.App.Core {
 		private readonly BrushConverter _brushConverter;
 		private const string _overdueColor = "#7F0000";
 		private List<Control> _persistentMenuItems; //List of items which will never removed from the ContextMenu.
-		private System.Drawing.Image[] _loadingImages;
+		private Icon[] _animationIcons;
 		private Timer _animationTimer;
 		private int _currentAnimationIndex;
 		private Icon _animationBaseIcon;
-		
+		private System.Drawing.Image _plainTrayBaseImage;
+
 		private MenuItem mnuExit;
 		private MenuItem mnuSettings;
 		private MenuItem mnuAbout;
@@ -56,7 +59,11 @@ namespace wunderbar.App.Core {
 
 			mnuSettings = new MenuItem {Header = "Settings...", IsEnabled = false};
 			mnuAbout = new MenuItem {Header = "About..."};
-			mnuAbout.Click += (o, e) => Ui.Dialogs.aboutDialog.Instance.ShowDialog();
+			mnuAbout.Click += (o, e) => {
+			                  	var dialog = Ui.Dialogs.aboutDialog.Instance;
+			                  	dialog.DataContext = Session;
+			                  	dialog.ShowDialog();
+			                  };
 			mnuSeparatorMain = new Separator();
 
 			//Non-Persistent Items
@@ -81,25 +88,27 @@ namespace wunderbar.App.Core {
 
 			//Read Images from Resources
 			_animationBaseIcon = readIconFromResource("tray");
-			_loadingImages = new System.Drawing.Image[9];
-			for (int i = 0; i <= 8; i++)
-				_loadingImages[i] = readImageFromResource(string.Format("loadingAnimation/loadingAnimation{0}", i));
-			
+			_plainTrayBaseImage = readImageFromResource("plain-tray");
+
+			//Create animation images
+			_animationIcons = new Icon[9];
+			for (int i = 0; i <= 8; i++) {
+				using (var bitmap = new Bitmap(16, 16)) {
+					using (var g = Graphics.FromImage(bitmap)) {
+						g.DrawImage(_animationBaseIcon.ToBitmap(), 0, 0, 16, 16);
+						g.DrawImage(readImageFromResource(string.Format("loadingAnimation/loadingAnimation{0}", i)), 0, 0, 16, 16);
+					}
+					_animationIcons[i] = Icon.FromHandle(bitmap.GetHicon());
+				}
+			}
+
 			//Initialize Animationtimer
 			_animationTimer = new Timer(85);
 			_animationTimer.Elapsed += _animationTimer_Elapsed;
 		}
 
 		void _animationTimer_Elapsed(object sender, ElapsedEventArgs e) {
-
-			//TODO: Cache this generated Icons, this is wasted performance...
-			using (var bitmap = new Bitmap(16, 16)) {
-				using (var g = Graphics.FromImage(bitmap)) {
-					g.DrawImage(_animationBaseIcon.ToBitmap(), 0, 0, 16, 16);
-					g.DrawImage(_loadingImages[_currentAnimationIndex], 0, 0, 16, 16);
-				}
-				_trayIcon.Icon = Icon.FromHandle(bitmap.GetHicon());
-			}
+			_trayIcon.Icon = _animationIcons[_currentAnimationIndex];
 			_currentAnimationIndex++;
 			if (_currentAnimationIndex > 8)
 				_currentAnimationIndex = 0;
@@ -137,6 +146,7 @@ namespace wunderbar.App.Core {
 				addDueTasks();
 			}
 			addError();
+			showDueTasksInTrayIcon(); //This needs to be called every time the menu updates
 		}
 
 		private MenuItem buildTaskTree(listType list) {
@@ -201,6 +211,36 @@ namespace wunderbar.App.Core {
 			var taskLocal = task; //Looks awkward but it's important to copy that variable, see: http://confluence.jetbrains.net/display/ReSharper/Access+to+modified+closure
 			mnuTask.Click += (o, e) => Session.showTask(taskLocal);
 			return mnuTask;
+		}
+
+		private void showDueTasksInTrayIcon() {
+			if (_animationTimer != null && _animationTimer.Enabled) //Do nothing when the animation is enabled :-)
+				return;
+
+			if (!Session.wunderClient.loggedIn || !Session.Settings.showDueTasksInTrayIcon || !Session.wunderClient.Tasks.dueTasks.Any()) {
+				_trayIcon.Icon = _animationBaseIcon;
+				return;
+			}
+
+			using (var bitmap = new Bitmap(16, 16)) {
+				using (var g = Graphics.FromImage(bitmap)) {
+					g.DrawImage(_plainTrayBaseImage, 0, 0, 16, 16);
+					using (var font = new Font("Verdana", 9, FontStyle.Bold, GraphicsUnit.Pixel)) {
+						var textRect = new RectangleF(-4, 0, 24, 16);
+						var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+						int dueTasks = Session.wunderClient.Tasks.dueTasks.Count();
+						g.DrawString(
+							dueTasks >= 100 ? "+" : dueTasks.ToString(CultureInfo.InvariantCulture),
+							font,
+							System.Drawing.Brushes.White,
+							textRect,
+							sf
+							);
+					}
+				}
+				_trayIcon.Icon = Icon.FromHandle(bitmap.GetHicon());
+			}
+
 		}
 
 		private Icon readIconFromResource(string iconName) {

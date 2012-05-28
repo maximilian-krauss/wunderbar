@@ -15,10 +15,12 @@ namespace wunderbar.App.Data {
 		private string _password;
 		private bool _enableAutoSync;
 		private int _autoSyncInterval;
+		private bool _showDueTasksInTrayIcon;
 
 		public applicationSettings() {
 			_enableAutoSync = true;
 			_autoSyncInterval = 5;
+			_showDueTasksInTrayIcon = true;
 		}
 
 		/// <summary>Gets or Sets the eMail-Address for Wunderlist.</summary>
@@ -30,6 +32,8 @@ namespace wunderbar.App.Data {
 		public bool enableAutoSync { get { return _enableAutoSync; } set { _enableAutoSync = value; onPropertyChanged("enableAutoSync"); } }
 
 		public int autoSyncInterval { get { return _autoSyncInterval; } set { _autoSyncInterval = value; onPropertyChanged("autoSyncInterval"); } }
+
+		public bool showDueTasksInTrayIcon { get { return _showDueTasksInTrayIcon; } set { _showDueTasksInTrayIcon = value; onPropertyChanged("showDueTasksInTrayIcon"); } }
 
 		[XmlIgnore] //the Property is Private but just for being save we don't want to serialize the applicationSession
 		private applicationSession Session { get; set; }

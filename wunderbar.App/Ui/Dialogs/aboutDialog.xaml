@@ -24,23 +24,25 @@
 				<RowDefinition />
 				<RowDefinition />
 				<RowDefinition />
+				<RowDefinition />
 			</Grid.RowDefinitions>
 			
 			<Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource LabelMainInstruction}">wunderbar</Label>
 			
 			<Label Grid.Row="1" Grid.Column="0">Version:</Label>
-			<Label Grid.Row="1" Grid.Column="1" Name="lblVersion">1.0.0.0</Label>
+			<Label Grid.Row="1" Grid.Column="1" Name="lblVersion" Content="{Binding displayVersion}" />
+			<Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Content="Lazy student approved" Foreground="Gray" />
 			
-			<Label Grid.Row="2" Grid.Column="0">Copyright:</Label>
-			<Label Grid.Row="2" Grid.Column="1">
+			<Label Grid.Row="3" Grid.Column="0">Copyright:</Label>
+			<Label Grid.Row="3" Grid.Column="1">
 				<Hyperlink Click="Hyperlink_Click" NavigateUri="http://coffeeInjection.com">Maximilian Krauss - coffeeInjection</Hyperlink>
 			</Label>
 			
-			<TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 10" FontWeight="Bold" Foreground="Maroon" TextWrapping="Wrap" MaxWidth="300">
+			<TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="5 10" FontWeight="Bold" Foreground="Maroon" TextWrapping="Wrap" MaxWidth="300">
 				Imporant Notice: This is Pre-Release software. Use it on your own risk.
 			</TextBlock>
 			
-			<Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Width="110" Margin="5" Padding="2 2" HorizontalAlignment="Left" >Check for Updates</Button>
+			<Button Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Width="110" Margin="5" Padding="2 2" HorizontalAlignment="Left" >Check for Updates</Button>
 			
 		</Grid>
 		

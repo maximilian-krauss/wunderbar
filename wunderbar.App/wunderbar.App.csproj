@@ -185,6 +185,9 @@
   <ItemGroup>
     <Resource Include="Gfx\Images\Tasks\no_date.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\plain-tray.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Debug goto :exit

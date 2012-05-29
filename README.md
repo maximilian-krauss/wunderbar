@@ -25,3 +25,4 @@ This Application is licened under The Code Project Open License (CPOL) 1.02 whic
 * Add new Lists from the Tray-ContextMenu
 * Implement shared lists
 * Localization
+* Set up push notifications

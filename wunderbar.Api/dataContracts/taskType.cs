@@ -60,9 +60,15 @@ namespace wunderbar.Api.dataContracts {
 			get { return (Date > 0 && Done == 0 && dueDate.Date < DateTime.Now.Date); }
 		}
 
+		[IgnoreDataMember]
+		[httpClientIgnoreProperty]
+		public bool canPostpone {
+			get { return Date > 0 && dueDate.Date <= DateTime.Now.Date; }
+		}
+
 		/// <summary>Postpones this task for one day.</summary>
 		public void Postpone() {
-			if (Date > 0) {
+			if (canPostpone) {
 				Date = (long) DateTime.Now.AddDays(1).Date.ToUnixTimeStamp();
 			}
 		}

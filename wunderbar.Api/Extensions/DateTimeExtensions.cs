@@ -7,16 +7,15 @@ namespace wunderbar.Api.Extensions {
 	public static class DateTimeExtensions {
 
 		public static DateTime FromUnixTimeStamp(this DateTime dt, long timestamp) {
-			DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Local);
-			origin = origin.AddHours(TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).Hours);
-				//This is important because the value provided by wunderlist is an UTC Date
-			return origin.AddSeconds((long) timestamp).Date;
+			var result = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(timestamp).ToLocalTime();
+			return result;
 		}
 
 		public static double ToUnixTimeStamp(this DateTime dt) {
-			DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-			TimeSpan diff = dt.Date - origin;
-			return Math.Floor((diff.TotalSeconds - TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).Seconds));
+			DateTime baseDate = new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc);
+			var localDate = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, DateTimeKind.Local);
+			var diff = localDate.ToUniversalTime() - baseDate;
+			return diff.TotalSeconds;
 		}
 
 		/// <summary>Converts the specified DateTime to its relative date.</summary>

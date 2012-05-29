@@ -21,13 +21,21 @@ namespace wunderbar.Api {
 
 		private bool _loggedIn;
 
+		public event EventHandler<httpRequestCreatedEventArgs> httpRequestCreated;
+
 		public wunderClient() {
 			_credentials = new digestCredentials();
 			_httpClient = new httpClient();
+			_httpClient.httpRequestCreated += (o, e) => onHttpRequestCreated(e);
 			Lists = new listCollection();
 			Tasks = new taskCollection();
 
 			_loggedIn = false;
+		}
+
+		private void onHttpRequestCreated(httpRequestCreatedEventArgs e) {
+			EventHandler<httpRequestCreatedEventArgs> handler = httpRequestCreated;
+			if (handler != null) handler(this, e);
 		}
 
 		/// <summary>Returns all Lists from the Wunderlist-Account.</summary>

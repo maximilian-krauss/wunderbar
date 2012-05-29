@@ -16,6 +16,13 @@ using System.Web;
 namespace wunderbar.Api {
 	internal sealed class httpClient {
 
+		public event EventHandler<httpRequestCreatedEventArgs> httpRequestCreated;
+
+		private void onHttpRequestCreated(httpRequestCreatedEventArgs e) {
+			EventHandler<httpRequestCreatedEventArgs> handler = httpRequestCreated;
+			if (handler != null) handler(this, e);
+		}
+
 		public TResponse httpPost<TRequest, TResponse>(TRequest request)
 			where TRequest : baseRequest
 			where TResponse : baseResponse {
@@ -29,6 +36,9 @@ namespace wunderbar.Api {
 			httpRequest.ContentType = "application/x-www-form-urlencoded";
 			httpRequest.Accept = "application/json";
 			httpRequest.UserAgent = string.Format("wunderbar/v{0}", Assembly.GetExecutingAssembly().GetName().Version);
+			//Allow 3rd parties to manipulate the request. Required for proxyconfiguration etc.
+			onHttpRequestCreated(new httpRequestCreatedEventArgs(httpRequest));
+
 			httpRequest.ContentLength = requestData.Length;
 			httpRequest.GetRequestStream().Write(requestData, 0, requestData.Length);
 

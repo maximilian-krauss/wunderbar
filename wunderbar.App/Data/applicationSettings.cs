@@ -19,6 +19,7 @@ namespace wunderbar.App.Data {
 		private bool _enableAutoSync;
 		private int _autoSyncInterval;
 		private bool _showDueTasksInTrayIcon;
+		private bool _useNtlmProxyAuthentication;
 
 		static applicationSettings() {
 			_token = Assembly.GetExecutingAssembly().GetName().GetPublicKey();
@@ -40,6 +41,8 @@ namespace wunderbar.App.Data {
 		public int autoSyncInterval { get { return _autoSyncInterval; } set { _autoSyncInterval = value; onPropertyChanged("autoSyncInterval"); } }
 
 		public bool showDueTasksInTrayIcon { get { return _showDueTasksInTrayIcon; } set { _showDueTasksInTrayIcon = value; onPropertyChanged("showDueTasksInTrayIcon"); } }
+
+		public bool useNtlmProxyAuthentication { get { return _useNtlmProxyAuthentication; } set { _useNtlmProxyAuthentication = value; onPropertyChanged("useNtlmProxyAuthentication"); } }
 
 		[XmlIgnore] //the Property is Private but just for being save we don't want to serialize the applicationSession
 		private applicationSession Session { get; set; }

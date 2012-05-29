@@ -65,6 +65,7 @@
     <Compile Include="httpClient.cs" />
     <Compile Include="httpClientAttributes\httpClientIgnorePropertyAttribute.cs" />
     <Compile Include="httpClientAttributes\httpClientTransformValueAttribute.cs" />
+    <Compile Include="httpRequestCreatedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests\baseRequest.cs" />
     <Compile Include="Requests\loginRequest.cs" />

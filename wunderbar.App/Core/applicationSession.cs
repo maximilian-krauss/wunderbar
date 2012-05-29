@@ -13,6 +13,7 @@ using wunderbar.App.Data;
 using wunderbar.Api.dataContracts;
 using wunderbar.App.Ui.Dialogs;
 using wunderbar.Api.Extensions;
+using System.Net;
 
 namespace wunderbar.App.Core {
 	internal sealed class applicationSession : IDisposable {
@@ -25,6 +26,7 @@ namespace wunderbar.App.Core {
 			wunderClient = new wunderClient {
 			                                	localStorageDirectory = applicationDataStorageDirectory
 			                                };
+			wunderClient.httpRequestCreated += wunderClient_httpRequestCreated;
 
 			//This should initialized at last...
 			syncController = new syncController(this);
@@ -53,7 +55,7 @@ namespace wunderbar.App.Core {
 		/// <summary>Returns the current Applicationversion.</summary>
 		public Version applicationVersion { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
 
-		public string displayVersion { get { return string.Format("{0} beta 1", applicationVersion); } }
+		public string displayVersion { get { return string.Format("{0} beta 2", applicationVersion); } }
 
 		/// <summary>Returns the last error which occoured while logging in or syncing.</summary>
 		public Exception lastError { get; private set; }
@@ -180,6 +182,11 @@ namespace wunderbar.App.Core {
 				wunderClient.Tasks.addOrUpdateTask(task);
 
 			onTrayContextUpdateRequired(EventArgs.Empty);
+		}
+
+		void wunderClient_httpRequestCreated(object sender, httpRequestCreatedEventArgs e) {
+			if (Settings.useNtlmProxyAuthentication && e.Request.Proxy != null)
+				e.Request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
 		}
 
 		#region Event Invocations

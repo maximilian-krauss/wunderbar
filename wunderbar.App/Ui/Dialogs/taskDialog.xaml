@@ -70,7 +70,7 @@
 				   AllowsTransparency="True" x:FieldModifier="private">
 				<Border BorderBrush="Transparent" BorderThickness="0" Background="Transparent">
 					<Calendar SelectedDate="{Binding Date, Converter={StaticResource dateConverter}}"
-							  FirstDayOfWeek="Monday"/>
+							  FirstDayOfWeek="Monday" SelectedDatesChanged="Calendar_SelectedDatesChanged" />
 				</Border>
 			</Popup>
 			

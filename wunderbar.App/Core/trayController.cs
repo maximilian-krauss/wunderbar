@@ -150,6 +150,8 @@ namespace wunderbar.App.Core {
 
 		private MenuItem buildTaskTree(listType list) {
 			var listRoot = new MenuItem {Header = list.Name};
+			if (list.Inbox == 1)
+				listRoot.Icon = readImageControlFromResource("Tasks/inbox");
 			
 			//Add 'Add new Task' Item
 			var mnuAddNewTask = new MenuItem {Header = "Add new task", Icon = readImageControlFromResource("Tasks/plus")};

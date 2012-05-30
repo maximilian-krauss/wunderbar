@@ -193,6 +193,9 @@
   <ItemGroup>
     <Resource Include="Gfx\Images\task-cloud.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\Tasks\inbox.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Debug goto :exit

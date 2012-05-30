@@ -60,8 +60,7 @@ namespace wunderbar.App.Core {
 			mnuSettings = new MenuItem {Header = "Settings...", IsEnabled = false};
 			mnuAbout = new MenuItem {Header = "About..."};
 			mnuAbout.Click += (o, e) => {
-			                  	var dialog = Ui.Dialogs.aboutDialog.Instance;
-			                  	dialog.DataContext = Session;
+			                  	var dialog = new Ui.Dialogs.aboutDialog {DataContext = Session};
 			                  	dialog.ShowDialog();
 			                  };
 			mnuSeparatorMain = new Separator();

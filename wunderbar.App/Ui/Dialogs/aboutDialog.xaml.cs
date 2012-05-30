@@ -4,14 +4,8 @@ using System.Diagnostics;
 
 namespace wunderbar.App.Ui.Dialogs {
 	public partial class aboutDialog : Window {
-		private static aboutDialog _instance;
-
 		public aboutDialog() {
 			InitializeComponent();
-		}
-
-		public static aboutDialog Instance {
-			get { return _instance ?? (_instance = new aboutDialog()); }
 		}
 
 		private void Hyperlink_Click(object sender, RoutedEventArgs e) {

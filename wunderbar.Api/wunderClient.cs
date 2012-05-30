@@ -158,6 +158,10 @@ namespace wunderbar.Api {
 			if (string.IsNullOrWhiteSpace(localStorageDirectory))
 				return;
 
+			//Not logged in, no data to write
+			if (!_loggedIn)
+				return;
+
 			string lsDirectory = localStoragePath;
 			if (!Directory.Exists(lsDirectory))
 				Directory.CreateDirectory(lsDirectory);
@@ -212,6 +216,12 @@ namespace wunderbar.Api {
 		#region IDisposable Members
 
 		public void Dispose() {
+			//Save unsynced changes
+			writeLocalStorage();
+
+			Tasks.Clear();
+			Lists.Clear();
+
 			_credentials.Password = string.Empty;
 		}
 

@@ -1,27 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using System.Windows;
-using wunderbar.Api;
 using System.IO;
-using System.Threading.Tasks;
-using System.Threading;
-using wunderbar.App.Data;
-using wunderbar.Api.dataContracts;
-using wunderbar.App.Ui.Dialogs;
-using wunderbar.Api.Extensions;
 using System.Net;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
+using wunderbar.Api;
+using wunderbar.Api.dataContracts;
+using wunderbar.Api.Extensions;
+using wunderbar.App.Data;
+using wunderbar.App.Ui.Dialogs;
 
 namespace wunderbar.App.Core {
 	internal sealed class applicationSession : IDisposable {
 		private const string _portableIdentifier = "portable";
 		private const string _newTaskText = "<Enter a name for your task>";
+
+		private LoggingConfiguration _loggingConfiguration;
 		
 		public applicationSession(Window owner) {
 			mainWindow = owner;
+			initializeLogger();
+
+			//Trigger Exceptionhandler
+			Application.Current.Dispatcher.UnhandledException += Dispatcher_UnhandledException;
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
 			Settings = applicationSettings.Load(this);
 			wunderClient = new wunderClient {
 			                                	localStorageDirectory = applicationDataStorageDirectory
@@ -60,6 +68,8 @@ namespace wunderbar.App.Core {
 		/// <summary>Returns the last error which occoured while logging in or syncing.</summary>
 		public Exception lastError { get; private set; }
 
+		public Logger Logger { get; private set; }
+
 		/// <summary>Returns an Option that indicates which Items from the ContextMenu should be displayed.</summary>
 		internal trayContextTypes trayContextType{
 			get {
@@ -88,7 +98,6 @@ namespace wunderbar.App.Core {
 
 		/// <summary>Closes and Disposes all Applicationmodules.</summary>
 		public void closeApplication() {
-			//TODO: Save unsychronized tasks and lists
 			Settings.Save();
 			mainWindow.Close();
 		}
@@ -116,6 +125,8 @@ namespace wunderbar.App.Core {
 				loginTask.Wait();
 			}
 			catch (Exception exc) {
+				//TODO: Too redundant, see catch-block in Sychronize()
+				Logger.WarnException("Login failed.", exc);
 				lastError = exc.LowestException();
 				onTrayContextUpdateRequired(EventArgs.Empty);
 				trayController.stopAnimation();
@@ -187,6 +198,39 @@ namespace wunderbar.App.Core {
 		void wunderClient_httpRequestCreated(object sender, httpRequestCreatedEventArgs e) {
 			if (Settings.useNtlmProxyAuthentication && e.Request.Proxy != null)
 				e.Request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+		}
+
+		private void initializeLogger() {
+			_loggingConfiguration = new LoggingConfiguration();
+
+			var fTarget = new FileTarget {
+											Header = "" ,
+			                             	Layout = "[${longdate}] [${logger}] [${level}]: ${message} ${exception} ${stacktrace}",
+											FileName = // Do not use string.Format, it will crash!
+			                             		Path.Combine(applicationDataStorageDirectory, "Logs", applicationName + "_${shortdate}.log")
+			                             };
+			_loggingConfiguration.AddTarget("file", fTarget);
+
+			var mainRule = new LoggingRule("*", LogLevel.Debug, fTarget);
+			_loggingConfiguration.LoggingRules.Add(mainRule);
+
+			LogManager.Configuration = _loggingConfiguration;
+			Logger = LogManager.GetLogger("Base");
+		}
+
+		void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
+			showExceptionDialog((Exception)e.ExceptionObject);
+		}
+		void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e) {
+			showExceptionDialog(e.Exception);
+			e.Handled = true;
+		}
+		void showExceptionDialog(Exception exc) {
+			Logger.FatalException("Unhandled exception cought!", exc);
+			var dialog = new exceptionDialog { DataContext = exc };
+			dialog.ShowDialog();
+			if (mainWindow != null)
+				mainWindow.Close();
 		}
 
 		#region Event Invocations

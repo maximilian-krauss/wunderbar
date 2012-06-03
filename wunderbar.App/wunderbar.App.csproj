@@ -82,6 +82,9 @@
     <Compile Include="Ui\Dialogs\exceptionDialog.xaml.cs">
       <DependentUpon>exceptionDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\Dialogs\settingsDialog.xaml.cs">
+      <DependentUpon>settingsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\Dialogs\taskDialog.xaml.cs">
       <DependentUpon>taskDialog.xaml</DependentUpon>
     </Compile>
@@ -111,6 +114,10 @@
     <Compile Include="Ui\Dialogs\loginDialog.xaml.cs">
       <DependentUpon>loginDialog.xaml</DependentUpon>
     </Compile>
+    <Page Include="Ui\Dialogs\settingsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Ui\Dialogs\taskDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

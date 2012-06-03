@@ -1,0 +1,60 @@
+﻿<Window x:Class="wunderbar.App.Ui.Dialogs.settingsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="wunderbar - Settings" MinHeight="350" MinWidth="500" Height="350" Width="500"
+		WindowStartupLocation="CenterScreen">
+	<TabControl Margin="10" TabStripPlacement="Left">
+		<TabControl.Resources>
+			<Style x:Key="tabHeader" TargetType="{x:Type TextBlock}">
+				<Setter Property="Margin" Value="2 3" />
+			</Style>
+			<Style x:Key="tabContent" TargetType="{x:Type StackPanel}">
+				<Setter Property="Margin" Value="6" />
+			</Style>
+			<Style TargetType="{x:Type GroupBox}">
+				<Setter Property="Margin" Value="0 5 0 5" />
+				<Setter Property="Padding" Value="0 5 0 5" />
+			</Style>
+		</TabControl.Resources>
+		
+		<!-- General -->
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Style="{StaticResource tabHeader}" Text="General" />
+			</TabItem.Header>
+			<StackPanel Style="{StaticResource tabContent}">
+				<CheckBox Margin="0 5" IsChecked="{Binding autoRun}">Load wunderbar when my computer starts up</CheckBox>
+				<CheckBox Margin="0 5" IsChecked="{Binding showDueTasksInTrayIcon}">Show due tasks in trayicon</CheckBox>
+				<GroupBox Header="Background synchronization">
+					<StackPanel>
+						<CheckBox IsChecked="{Binding enableAutoSync}">Automatically sync tasks and lists</CheckBox>
+						<Grid Margin="0 5" IsEnabled="{Binding enableAutoSync}">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<TextBlock Grid.Column="0" Text="Interval (minutes):" Padding="5 0" />
+							<TextBlock Grid.Column="1" Text="{Binding ElementName=sldInterval, Path=Value}" Padding="5 0" />
+							<Slider Grid.Column="2" Name="sldInterval" Minimum="5" Maximum="60" Value="{Binding autoSyncInterval}" TickPlacement="None" SmallChange="1" Padding="5 0" />
+						</Grid>
+					</StackPanel>
+				</GroupBox>
+			</StackPanel>
+		</TabItem>
+		
+		<!-- Proxy related -->
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Style="{StaticResource tabHeader}" Text="Proxy" />
+			</TabItem.Header>
+			<Grid>
+				<TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" FontSize="18">Nothing here yet, move along</TextBlock>
+			</Grid>
+		</TabItem>
+		
+	</TabControl>
+</Window>

@@ -47,6 +47,12 @@ namespace wunderbar.App.Core {
 			initializeAnimation();
 			initializeMenu();
 			Session.trayContextUpdateRequired += (o, e) => updateMenu();
+			Session.Settings.PropertyChanged += Settings_PropertyChanged;
+		}
+
+		void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+			if (e.PropertyName == "showDueTasksInTrayIcon")
+				showDueTasksInTrayIcon();
 		}
 
 		/// <summary>Initializes the ContextMenu for the first time.</summary>
@@ -57,7 +63,9 @@ namespace wunderbar.App.Core {
 			mnuExit = new MenuItem {Header = "Exit"};
 			mnuExit.Click += (o, e) => Session.closeApplication();
 
-			mnuSettings = new MenuItem {Header = "Settings...", IsEnabled = false};
+			mnuSettings = new MenuItem {Header = "Settings..."};
+			mnuSettings.Click += (o, e) => new Ui.Dialogs.settingsDialog {DataContext = Session.Settings}.ShowDialog();
+
 			mnuAbout = new MenuItem {Header = "About..."};
 			mnuAbout.Click += (o, e) => {
 			                  	var dialog = new Ui.Dialogs.aboutDialog {DataContext = Session};

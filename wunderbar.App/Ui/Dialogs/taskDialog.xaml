@@ -34,12 +34,14 @@
 			</Grid.RowDefinitions>
 
 			<!-- Taskname -->
-			<StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
-				<TextBox Foreground="#006E12" FontSize="16" Text="{Binding Name}"
+
+			<Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Margin="0 0 10 0"
+					BorderBrush="{x:Static SystemColors.ControlLightBrush}" BorderThickness="0 0 0 1" >
+					<TextBox Foreground="#006E12" FontSize="16" Text="{Binding Name, ValidatesOnDataErrors=True}" 
 						 Margin="10 0 10 5" BorderBrush="Transparent"
 						 ToolTip="Enter a Name for your Task"/>
-				<Border BorderBrush="{x:Static SystemColors.ControlLightBrush}" BorderThickness="0 0 0 1" />
-			</StackPanel>
+			</Border>
+			
 			
 			<!-- Important? -->
 			<CheckBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="10" IsChecked="{Binding Important, Converter={StaticResource boolConverter}}">Important task</CheckBox>
@@ -55,7 +57,7 @@
 						<Setter Property="BorderBrush" Value="{x:Null}" />
 					</Style>
 				</StackPanel.Resources>
-				<Label Content="{Binding Date, Converter={StaticResource prettyDateConverter}, Mode=OneWay}" />
+				<Label VerticalAlignment="Center" Content="{Binding Date, Converter={StaticResource prettyDateConverter}, Mode=OneWay}" />
 				<Button Click="Button_Click" Name="dateTriggerButton"
 						ToolTip="Sets a due date for this task.">
 					<Image Width="16" Height="16" Source="/Gfx/Images/Tasks/calendar.png" />
@@ -90,18 +92,17 @@
 
 		<!-- Controls -->
 		<Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Style="{StaticResource BorderControls}">
-			<WrapPanel FlowDirection="RightToLeft" Margin="6">
-				<WrapPanel.Resources>
+			<StackPanel Orientation="Horizontal" FlowDirection="RightToLeft"  Margin="6">
+				<StackPanel.Resources>
 					<Style TargetType="{x:Type Button}">
 						<Setter Property="Padding" Value="10 2" />
 						<Setter Property="Margin" Value=" 4 4" />
 					</Style>
-				</WrapPanel.Resources>
+				</StackPanel.Resources>
 				<Button Name="btnClose" Click="btnClose_Click" x:FieldModifier="private">Close</Button>
 				<Button Name="btnDone" Click="btnDone_Click" x:FieldModifier="private">Mark as done</Button>
 				<Button Name="btnPostpone" Click="btnPostpone_Click" x:FieldModifier="private">Postpone</Button>
-			</WrapPanel>
+			</StackPanel>
 		</Border>
-		
 	</Grid>
 </Window>

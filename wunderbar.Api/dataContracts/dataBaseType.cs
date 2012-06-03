@@ -9,7 +9,7 @@ using wunderbar.Api.httpClientAttributes;
 namespace wunderbar.Api.dataContracts {
 
 	[DataContract]
-	public abstract class dataBaseType : INotifyPropertyChanged {
+	public abstract class dataBaseType : INotifyPropertyChanged, IDataErrorInfo {
 
 		private int _deleted;
 		private string _name;
@@ -68,5 +68,27 @@ namespace wunderbar.Api.dataContracts {
 			_onUpdate = false;
 		}
 
+
+		#region IDataErrorInfo Members
+
+		[IgnoreDataMember]
+		[httpClientIgnoreProperty]
+		public string Error {
+			get { return null; }
+		}
+
+		[IgnoreDataMember]
+		[httpClientIgnoreProperty]
+		public virtual string this[string columnName] {
+			get {
+				string result = null;
+				if (columnName == "Name" && string.IsNullOrWhiteSpace(_name))
+					result = "Name can't be empty.";
+
+				return result;
+			}
+		}
+
+		#endregion
 	}
 }

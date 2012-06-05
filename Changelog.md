@@ -1,6 +1,13 @@
 Changelog
 =========
 
+### wunderbar 1.0 b3
+* [Bug] In some cases the transmitted date-value can be null which caused an NullReferenceException.
+* [Bug] Problem when inserting more as one task between one syncinterval (epic fail).
+* [Bug] If a task is marked as done wunderbar sets now the doneDate-property properly.
+* [Feature] It's now possible to configure if due/overdue tasks should appear on top of the contextmenu.
+* [Feature] Icon for shared lists
+
 ### wunderbar 1.0 b2
 * [Feature] Settingswindow (yay!)
 * [Feature] Load wunderbar when windows starts (optional, of course)

@@ -30,7 +30,7 @@ namespace wunderbar.App.Ui.Dialogs {
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e) {
-			if ((DataContext as taskType).Id == 0) {
+			if ((DataContext as taskType).Id <= 0) {
 				btnClose.Content = "Add Task";
 				btnPostpone.Visibility = Visibility.Hidden;
 				btnDone.Visibility = Visibility.Hidden;

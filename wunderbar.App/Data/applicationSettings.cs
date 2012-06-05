@@ -22,14 +22,18 @@ namespace wunderbar.App.Data {
 		private int _autoSyncInterval;
 		private bool _showDueTasksInTrayIcon;
 		private bool _useNtlmProxyAuthentication;
+		private bool _showDueTasksOnTop;
 
 		static applicationSettings() {
 			_token = Assembly.GetExecutingAssembly().GetName().GetPublicKey();
 		}
+
+		//Screw you ReSharper, serialization needs an PUBLIC constructor
 		public applicationSettings() {
 			_enableAutoSync = true;
 			_autoSyncInterval = 5;
 			_showDueTasksInTrayIcon = true;
+			_showDueTasksOnTop = true;
 		}
 
 		/// <summary>Gets or sets the eMail-Address for Wunderlist.</summary>
@@ -49,6 +53,9 @@ namespace wunderbar.App.Data {
 
 		/// <summary>Gets or sets whether HTTP-Requets should use NTLM-auth or not. (Required for auth on ISA-Servers)</summary>
 		public bool useNtlmProxyAuthentication { get { return _useNtlmProxyAuthentication; } set { _useNtlmProxyAuthentication = value; onPropertyChanged("useNtlmProxyAuthentication"); } }
+
+		/// <summary>Gets or sets whether due or overdue tasks should appear on top of the contextmenu.</summary>
+		public bool showDueTasksOnTop { get { return _showDueTasksOnTop; } set { _showDueTasksOnTop = value; onPropertyChanged("showDueTasksOnTop"); } }
 
 		/// <summary>Gets or sets whether wunderbar should run on startup or not.</summary>
 		[XmlIgnore]

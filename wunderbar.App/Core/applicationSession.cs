@@ -19,12 +19,16 @@ namespace wunderbar.App.Core {
 	internal sealed class applicationSession : IDisposable {
 		private const string _portableIdentifier = "portable";
 		private const string _newTaskText = "<Enter a name for your task>";
+		private const int _randomMax = -10000;
+		private const int _randomMin = -99999;
 
 		private LoggingConfiguration _loggingConfiguration;
+		private readonly Random _random;
 		
 		public applicationSession(Window owner) {
 			mainWindow = owner;
 			initializeLogger();
+			_random = new Random(Environment.TickCount);
 
 			//Trigger Exceptionhandler
 			Application.Current.Dispatcher.UnhandledException += Dispatcher_UnhandledException;
@@ -63,7 +67,7 @@ namespace wunderbar.App.Core {
 		/// <summary>Returns the current Applicationversion.</summary>
 		public Version applicationVersion { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
 
-		public string displayVersion { get { return string.Format("{0} beta 2", applicationVersion); } }
+		public string displayVersion { get { return string.Format("{0} beta 3", applicationVersion); } }
 
 		/// <summary>Returns the last error which occoured while logging in or syncing.</summary>
 		public Exception lastError { get; private set; }
@@ -146,7 +150,7 @@ namespace wunderbar.App.Core {
 		/// <summary>Clears cached Tasks and Lists and removes any saved Credentials.</summary>
 		public void Logout() {
 			if(wunderClient.loggedIn)
-				wunderClient.removeLocalStorage();
+				wunderClient.Logout();
 
 			Settings.Password = string.Empty;
 			Settings.eMail = string.Empty;
@@ -182,14 +186,24 @@ namespace wunderbar.App.Core {
 		}
 
 		public void showTask(int listId) {
-			showTask(new taskType {listId = listId, Name = _newTaskText});
+			showTask(new taskType {
+									/*
+									 Because this is a new task, we have to set an custom id.
+									 And to seperate the newly created tasks from the synced one,
+									 we set the Id to a negative value.
+									 */
+									Id = _random.Next(_randomMin, _randomMax),
+			                      	listId = listId,
+									Name = _newTaskText,
+									userId = wunderClient.userId
+			                      });
 		}
 		public void showTask(taskType task) {
 			var dialog = new taskDialog {ListsItemSource = wunderClient.Lists, DataContext = task};
 			dialog.ShowDialog();
 
 			//New Task, needs to be added to our TaskList
-			if (dialog.DialogResult.HasValue && dialog.DialogResult.Value && task.Id == 0 && task.Name != _newTaskText)
+			if (dialog.DialogResult.HasValue && dialog.DialogResult.Value && task.Id <= 0 && task.Name != _newTaskText)
 				wunderClient.Tasks.addOrUpdateTask(task);
 
 			onTrayContextUpdateRequired(EventArgs.Empty);

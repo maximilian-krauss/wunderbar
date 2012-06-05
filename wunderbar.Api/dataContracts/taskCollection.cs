@@ -23,8 +23,13 @@ namespace wunderbar.Api.dataContracts {
 				existingTask.listId = task.listId;
 				existingTask.pushTS = task.pushTS;
 			}
-			else
+			else {
+				var maxPos = this.Where(t => t.listId == task.listId).OrderByDescending(t => t.Position).FirstOrDefault();
+				if (task.Position == 0 && maxPos != null)
+					task.Position = maxPos.Position + 1;
+					
 				Add(task);
+			}
 		}
 
 		/// <summary>Returns a List with overdue tasks.</summary>

@@ -15,6 +15,9 @@
 				<Setter Property="Margin" Value="0 5 0 5" />
 				<Setter Property="Padding" Value="0 5 0 5" />
 			</Style>
+			<Style TargetType="{x:Type CheckBox}">
+				<Setter Property="Margin" Value="0 5" />
+			</Style>
 		</TabControl.Resources>
 		
 		<!-- General -->
@@ -23,8 +26,11 @@
 				<TextBlock Style="{StaticResource tabHeader}" Text="General" />
 			</TabItem.Header>
 			<StackPanel Style="{StaticResource tabContent}">
-				<CheckBox Margin="0 5" IsChecked="{Binding autoRun}">Load wunderbar when my computer starts up</CheckBox>
-				<CheckBox Margin="0 5" IsChecked="{Binding showDueTasksInTrayIcon}">Show due tasks in trayicon</CheckBox>
+				
+				<CheckBox IsChecked="{Binding autoRun}">Load wunderbar when my computer starts up</CheckBox>
+				<CheckBox IsChecked="{Binding showDueTasksInTrayIcon}">Show due tasks in trayicon</CheckBox>
+				<CheckBox IsChecked="{Binding showDueTasksOnTop}">Show due or overdue tasks on top of the contextmenu</CheckBox>
+				
 				<GroupBox Header="Background synchronization">
 					<StackPanel>
 						<CheckBox IsChecked="{Binding enableAutoSync}">Automatically sync tasks and lists</CheckBox>

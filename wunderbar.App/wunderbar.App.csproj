@@ -210,6 +210,9 @@
   <ItemGroup>
     <Resource Include="Gfx\Images\wait-wat.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\shared.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Debug goto :exit

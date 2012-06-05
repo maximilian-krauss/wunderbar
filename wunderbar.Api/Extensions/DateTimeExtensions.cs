@@ -6,13 +6,16 @@ using System.Text;
 namespace wunderbar.Api.Extensions {
 	public static class DateTimeExtensions {
 
-		public static DateTime FromUnixTimeStamp(this DateTime dt, long timestamp) {
-			var result = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(timestamp).ToLocalTime();
+		public static DateTime FromUnixTimeStamp(this DateTime dt, long? timestamp) {
+			if (timestamp == null)
+				timestamp = 0;
+
+			var result = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds((long)timestamp).ToLocalTime();
 			return result;
 		}
 
 		public static double ToUnixTimeStamp(this DateTime dt) {
-			DateTime baseDate = new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc);
+			var baseDate = new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc);
 			var localDate = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, DateTimeKind.Local);
 			var diff = localDate.ToUniversalTime() - baseDate;
 			return diff.TotalSeconds;

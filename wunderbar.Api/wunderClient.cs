@@ -29,6 +29,7 @@ namespace wunderbar.Api {
 			_httpClient.httpRequestCreated += (o, e) => onHttpRequestCreated(e);
 			Lists = new listCollection();
 			Tasks = new taskCollection();
+			userId = -1;
 
 			_loggedIn = false;
 		}
@@ -50,6 +51,9 @@ namespace wunderbar.Api {
 		/// <summary>Returns if the User is logged in.</summary>
 		public bool loggedIn { get { return _loggedIn; } }
 
+		/// <summary>Returns the serverside userid for the currently logged in user.</summary>
+		public int userId { get; private set; }
+
 		/// <summary>Tries to Login to Wunderlist.</summary>
 		/// <param name="email">Your E-Mailaddress.</param>
 		/// <param name="password">Your Password.</param>
@@ -63,14 +67,16 @@ namespace wunderbar.Api {
 			                                                                               	Password = _credentials.Password
 			                                                                               });
 			_loggedIn = (result.statusCode == statusCodes.LOGIN_SUCCESS);
-			if(_loggedIn)
+			if (_loggedIn) {
 				readLocalStorage();
+				userId = result.userId;
+			}
 
 			return _loggedIn;
 		}
 
 		/// <summary>Clears the local Storage from the currently logged in User.</summary>
-		public void removeLocalStorage() {
+		public void Logout() {
 			if(!_loggedIn)
 				throw new InvalidOperationException("You need to Log-In before you can purge any Data.");
 
@@ -78,6 +84,7 @@ namespace wunderbar.Api {
 				Directory.Delete(localStoragePath, true);
 
 			_loggedIn = false;
+			userId = -1;
 		}
 
 		/// <summary>Synchronizes the LocalStorage with the Wunderlist-Servers.</summary>
@@ -122,7 +129,8 @@ namespace wunderbar.Api {
 			                                        	eMail = _credentials.eMail,
 			                                        	Password = _credentials.Password
 			                                        };
-			step2Request.syncTable.newTasks.AddRange(Tasks.Where(t => t.Id == 0));
+			step2Request.syncTable.newTasks.AddRange(Tasks.Where(t => t.Id <= 0));
+			step2Request.syncTable.newTasks.ForEach(t => t.Id = 0); //To successfully sync, set id to 0
 
 			if (step1Result.syncTable != null && step1Result.syncTable.requiredTasks != null)
 				step2Request.syncTable.requiredTasks.AddRange(
@@ -190,9 +198,12 @@ namespace wunderbar.Api {
 				Lists = deserializeJson<listCollection>(lsListsPath);
 
 			//Activate Changetracking
-			Tasks.ForEach(t => t.trackChanges = true);
+			Tasks.ForEach(t => {
+			              	t.trackChanges = true;
+			              	if (t.Date == null)
+			              		t.Date = 0;
+			              });
 			Lists.ForEach(l => l.trackChanges = true);
-
 		}
 
 		private string localStoragePath {

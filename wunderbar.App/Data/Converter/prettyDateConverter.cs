@@ -10,8 +10,8 @@ namespace wunderbar.App.Data.Converter {
 		#region IValueConverter Members
 
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-			long ticks = (long) value;
-			if (ticks == 0)
+			long? ticks = (long?) value;
+			if (ticks == null || ticks == 0)
 				return "No date set";
 
 			return DateTime.Now.FromUnixTimeStamp(ticks).ToRelativeDate();

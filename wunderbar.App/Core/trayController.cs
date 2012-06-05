@@ -53,6 +53,8 @@ namespace wunderbar.App.Core {
 		void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
 			if (e.PropertyName == "showDueTasksInTrayIcon")
 				showDueTasksInTrayIcon();
+			if(e.PropertyName =="showDueTasksOnTop")
+				updateMenu();
 		}
 
 		/// <summary>Initializes the ContextMenu for the first time.</summary>
@@ -67,10 +69,7 @@ namespace wunderbar.App.Core {
 			mnuSettings.Click += (o, e) => new Ui.Dialogs.settingsDialog {DataContext = Session.Settings}.ShowDialog();
 
 			mnuAbout = new MenuItem {Header = "About..."};
-			mnuAbout.Click += (o, e) => {
-			                  	var dialog = new Ui.Dialogs.aboutDialog {DataContext = Session};
-			                  	dialog.ShowDialog();
-			                  };
+			mnuAbout.Click += (o, e) => new Ui.Dialogs.aboutDialog {DataContext = Session}.ShowDialog();
 			mnuSeparatorMain = new Separator();
 
 			//Non-Persistent Items
@@ -160,6 +159,8 @@ namespace wunderbar.App.Core {
 			var listRoot = new MenuItem {Header = list.Name};
 			if (list.Inbox == 1)
 				listRoot.Icon = readImageControlFromResource("Tasks/inbox");
+			if (list.Shared == 1)
+				listRoot.Icon = readImageControlFromResource("shared");
 			
 			//Add 'Add new Task' Item
 			var mnuAddNewTask = new MenuItem {Header = "Add new task", Icon = readImageControlFromResource("Tasks/plus")};
@@ -177,6 +178,10 @@ namespace wunderbar.App.Core {
 		}
 
 		private void addDueTasks() {
+
+			if (!Session.Settings.showDueTasksOnTop)
+				return;
+
 			int tasksAdded = 0;
 			foreach (var task in Session.wunderClient.Tasks.dueTasks) {
 				tasksAdded++;
@@ -188,6 +193,9 @@ namespace wunderbar.App.Core {
 				mnuTask.Header = header;
 				_trayIcon.ContextMenu.Items.Insert(0, mnuTask);
 			}
+
+			if (tasksAdded == 0)
+				_trayIcon.ContextMenu.Items.Insert(0, new MenuItem {Header = "Yay! Nothing todo :)", IsEnabled = false});
 
 			if (tasksAdded > 0)
 				_trayIcon.ContextMenu.Items.Insert(tasksAdded, new Separator());

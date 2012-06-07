@@ -159,6 +159,10 @@ namespace wunderbar.Api {
 			writeLocalStorage();
 		}
 
+		public void shareList(listType list) {
+			
+		}
+
 		/// <summary>Writes Lists and Tasks to the LocalStorage in the FileSystem.</summary>
 		private void writeLocalStorage() {
 

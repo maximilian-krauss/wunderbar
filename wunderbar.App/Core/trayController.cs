@@ -19,6 +19,7 @@ using FontStyle = System.Drawing.FontStyle;
 namespace wunderbar.App.Core {
 	internal sealed class trayController : baseController {
 		private const int _maxHeaderLength = 25;
+		private const string _trayTitleTemplate = "{0} version {1}";
 
 		private readonly TaskbarIcon _trayIcon;
 		private readonly BrushConverter _brushConverter;
@@ -41,7 +42,7 @@ namespace wunderbar.App.Core {
 		public trayController(applicationSession session):base(session) {
 			_trayIcon = new TaskbarIcon {
 											Icon = readIconFromResource("tray"),
-											ToolTipText = string.Format("{0} version {1}", session.applicationName, session.displayVersion)
+											ToolTipText = string.Format(_trayTitleTemplate, session.applicationName, session.displayVersion)
 										};
 			_brushConverter = new BrushConverter();
 			initializeAnimation();
@@ -137,6 +138,12 @@ namespace wunderbar.App.Core {
 					_trayIcon.ContextMenu.Items.RemoveAt(i);
 
 			var state = Session.trayContextType;
+
+			//Set the tooltip title of the trayicon
+			_trayIcon.ToolTipText = string.Format(_trayTitleTemplate, Session.applicationName, Session.displayVersion);
+			if (Session.wunderClient.loggedIn)
+				_trayIcon.ToolTipText = _trayIcon.ToolTipText + "\r\n" + Session.Settings.eMail;
+
 			if (state == trayContextTypes.loginRequired) {
 				_trayIcon.ContextMenu.Items.Insert(0, mnuLogin);
 			}
@@ -161,8 +168,8 @@ namespace wunderbar.App.Core {
 				listRoot.Icon = readImageControlFromResource("Tasks/inbox");
 			if (list.Shared == 1)
 				listRoot.Icon = readImageControlFromResource("shared");
-			
-			//Add 'Add new Task' Item
+
+			//Add 'Add new task' item
 			var mnuAddNewTask = new MenuItem {Header = "Add new task", Icon = readImageControlFromResource("Tasks/plus")};
 			mnuAddNewTask.Click += (o, e) => Session.showTask(list.Id);
 			listRoot.Items.Add(mnuAddNewTask);
@@ -170,7 +177,7 @@ namespace wunderbar.App.Core {
 			foreach (var task in Session.wunderClient.Tasks.Where(t => t.listId == list.Id && t.Done == 0 && t.Deleted == 0).OrderBy(t => t.Position))
 				listRoot.Items.Add(createTaskMenuItem(task));
 
-			//Only add the Separator if there are one or more tasks in this list
+			//Only add the separator if there are one or more tasks in this list
 			if (listRoot.Items.Count > 1) 
 				listRoot.Items.Insert(1, new Separator());
 

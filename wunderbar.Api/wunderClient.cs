@@ -159,6 +159,7 @@ namespace wunderbar.Api {
 			writeLocalStorage();
 		}
 
+		/// <summary>Shares an list with others, identified by email</summary>
 		public void shareList(listType list) {
 			
 		}

@@ -39,5 +39,12 @@ namespace wunderbar.Api {
 		public const int DELETE_ACCOUNT_INVALID_EMAIL = 702;
 		public const int DELETE_ACCOUNT_NOT_EXISTS = 703;
 		public const int DELETE_ACCOUNT_DENIED = 704;
+
+		public const int SHARE_SUCCESS = 800;
+		public const int SHARE_FAILURE = 801;
+		public const int SHARE_DENIED = 802;
+		public const int SHARE_NOT_EXISTS = 803;
+		public const int SHARE_NOT_SHARED = 804;
+		public const int SHARE_OWN_EMAIL = 805;
 	}
 }

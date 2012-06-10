@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace wunderbar.Api {
-	public class wunderRequestException : Exception {
+	public class wunderRequestException : wunderException {
 		public wunderRequestException(int statusCode, string message) :base(message) {
 			this.statusCode = statusCode;
 		}

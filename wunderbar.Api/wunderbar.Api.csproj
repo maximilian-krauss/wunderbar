@@ -69,14 +69,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests\baseRequest.cs" />
     <Compile Include="Requests\loginRequest.cs" />
+    <Compile Include="Requests\sharedWithRequest.cs" />
     <Compile Include="Requests\syncStep1Request.cs" />
     <Compile Include="Requests\syncStep2Request.cs" />
     <Compile Include="Responses\baseResponse.cs" />
+    <Compile Include="Responses\sharedWithResponse.cs" />
     <Compile Include="Responses\syncStep1Response.cs" />
     <Compile Include="Responses\syncStep2Response.cs" />
     <Compile Include="statusCodes.cs" />
     <Compile Include="synchronizationException.cs" />
     <Compile Include="wunderClient.cs" />
+    <Compile Include="wunderException.cs" />
     <Compile Include="wunderRequestException.cs" />
   </ItemGroup>
   <ItemGroup>

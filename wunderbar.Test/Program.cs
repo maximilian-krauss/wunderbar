@@ -10,16 +10,18 @@ namespace wunderbar.Test {
 	class Program {
 		static void Main(string[] args) {
 
-			var client = new wunderClient();
-			client.localStorageDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "wunderbar");
+			var client = new wunderClient {
+			                              	localStorageDirectory =
+			                              		Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+			                              		             "wunderbar")
+			                              };
 
+			//Test login
 			Console.WriteLine("client.Login");
 			if(!client.Login(testCredentials.eMail,testCredentials.Password))
 				Console.WriteLine("Login failed!");
 
 			
-			//Console.WriteLine(client.Login() ? "Success" : "Fail");
-
 			//Grab all Tasks and Lists
 			Console.WriteLine("client.Synchronize");
 			client.Synchronize();
@@ -38,12 +40,20 @@ namespace wunderbar.Test {
 			});*/
 
 			//Modify Task
-			var task = client.Tasks.First(t => t.Done == 0 && t.Deleted == 0);
+			/*var task = client.Tasks.First(t => t.Done == 0 && t.Deleted == 0);
 			task.Name = task.Name + " Muh!";
 			task.Version++;
 
 			//Synchronize changes
-			client.Synchronize();
+			client.Synchronize();*/
+
+			//Fetch shared addresses
+			Console.WriteLine("client.sharedWith");
+			foreach (var list in client.Lists.Where(l => l.Shared == 1)) {
+				var addresses = client.sharedWith(list);
+				if(addresses!=null)
+					addresses.ForEach(Console.WriteLine);
+			}
 
 			Console.ReadKey();
 		}

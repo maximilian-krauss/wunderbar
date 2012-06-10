@@ -78,7 +78,7 @@ namespace wunderbar.Api {
 		/// <summary>Clears the local Storage from the currently logged in User.</summary>
 		public void Logout() {
 			if(!_loggedIn)
-				throw new InvalidOperationException("You need to Log-In before you can purge any Data.");
+				throw new wunderException("You need to Log-In before you can purge any Data.");
 
 			if(Directory.Exists(localStoragePath))
 				Directory.Delete(localStoragePath, true);
@@ -91,8 +91,7 @@ namespace wunderbar.Api {
 		public void Synchronize() {
 
 			if (!_loggedIn)
-				throw new InvalidOperationException(
-					"You need to call Login(email, password) first before you can Start Synchronizing.");
+				throw new wunderException("You need to call Login(email, password) first before you can Start Synchronizing.");
 
 			/*
 				Synchronization Step 1
@@ -159,11 +158,24 @@ namespace wunderbar.Api {
 			writeLocalStorage();
 		}
 
-		/// <summary>Shares an list with others, identified by email</summary>
-		public void shareList(listType list) {
-			
-		}
+		public List<string> sharedWith(listType list) {
+			if(!_loggedIn)
+				throw new wunderException("Cannot fetch addresses: User isn't logged in.");
+			if(list.Shared==0)
+				throw new wunderException("Cannot fetch addresses: List is not shared.");
 
+			var request = new sharedWithRequest {
+			                                    	eMail = _credentials.eMail,
+													Password = _credentials.Password,
+													listId = list.Id
+			                                    };
+			var response = _httpClient.httpPost<sharedWithRequest, sharedWithResponse>(request);
+			if (response.statusCode != statusCodes.SHARE_SUCCESS)
+				throw new wunderRequestException(response.statusCode, "Server error while fetching shared addresses");
+
+			return response.eMails;
+		}
+		
 		/// <summary>Writes Lists and Tasks to the LocalStorage in the FileSystem.</summary>
 		private void writeLocalStorage() {
 

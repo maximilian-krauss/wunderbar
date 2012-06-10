@@ -32,14 +32,13 @@ namespace wunderbar.App.Ui.Dialogs {
 		private void Window_Loaded(object sender, RoutedEventArgs e) {
 			if ((DataContext as taskType).Id <= 0) {
 				btnClose.Content = "Add Task";
-				btnPostpone.Visibility = Visibility.Hidden;
-				btnDone.Visibility = Visibility.Hidden;
+				btnCancel.Visibility = Visibility.Visible;
 			}
 
 			//Show the postpone only, if the task is due or overdue
-			btnPostpone.Visibility = ((DataContext as taskType).canPostpone)
+			/*btnPostpone.Visibility = ((DataContext as taskType).canPostpone)
 			                         	? Visibility.Visible
-			                         	: Visibility.Hidden;
+										: Visibility.Collapsed;*/
 
 		}
 
@@ -53,6 +52,10 @@ namespace wunderbar.App.Ui.Dialogs {
 
 		private void Calendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e) {
 				(((sender as Calendar).Parent as Border).Parent as Popup).IsOpen = false;
+		}
+
+		private void btnCancel_Click(object sender, RoutedEventArgs e) {
+			Close();
 		}
 	}
 }

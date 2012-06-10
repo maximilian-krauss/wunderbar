@@ -158,6 +158,7 @@ namespace wunderbar.Api {
 			writeLocalStorage();
 		}
 
+		/// <summary>Returns a list of email addresses with which the provided list is shared.</summary>
 		public List<string> sharedWith(listType list) {
 			if(!_loggedIn)
 				throw new wunderException("Cannot fetch addresses: User isn't logged in.");

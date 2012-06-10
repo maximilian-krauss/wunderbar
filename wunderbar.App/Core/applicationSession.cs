@@ -214,6 +214,10 @@ namespace wunderbar.App.Core {
 				e.Request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
 		}
 
+		public void showList(listType list) {
+			new listDialog {DataContext = list}.ShowDialog();
+		}
+
 		private void initializeLogger() {
 			_loggingConfiguration = new LoggingConfiguration();
 

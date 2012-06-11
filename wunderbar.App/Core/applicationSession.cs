@@ -121,7 +121,6 @@ namespace wunderbar.App.Core {
 			lastError = null;
 			trayController.startAnimation();
 			var loginTask = Task.Factory.StartNew(() => {
-			                                      	Thread.Sleep(5000);
 			                                      	if (!wunderClient.Login(credentials.eMail, credentials.Password))
 			                                      		throw new Exception("Login failed. Username and or Password are invalid.");
 			                                      });

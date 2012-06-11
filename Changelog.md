@@ -7,6 +7,8 @@ Changelog
 * [Bug] If a task is marked as done wunderbar sets now the doneDate-property properly.
 * [Feature] It's now possible to configure if due/overdue tasks should appear on top of the contextmenu.
 * [Feature] Icon for shared lists
+* [Feature] Click on trayicon creates new task
+* [Feature] "Cancel"-Button when creating a new task
 
 ### wunderbar 1.0 b2
 * [Feature] Settingswindow (yay!)

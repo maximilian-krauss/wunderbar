@@ -20,5 +20,9 @@ namespace wunderbar.Api.dataContracts {
 				Add(list);
 			
 		}
+
+		/// <summary>Returns the Inboxlist for the current user.</summary>
+		public listType Inbox{get { return this.FirstOrDefault(l => l.Inbox == 1); }}
+
 	}
 }

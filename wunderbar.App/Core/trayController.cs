@@ -44,11 +44,22 @@ namespace wunderbar.App.Core {
 											Icon = readIconFromResource("tray"),
 											ToolTipText = string.Format(_trayTitleTemplate, session.applicationName, session.displayVersion)
 										};
+			_trayIcon.TrayLeftMouseUp += _trayIcon_TrayLeftMouseUp;
 			_brushConverter = new BrushConverter();
 			initializeAnimation();
 			initializeMenu();
 			Session.trayContextUpdateRequired += (o, e) => updateMenu();
 			Session.Settings.PropertyChanged += Settings_PropertyChanged;
+		}
+
+		void _trayIcon_TrayLeftMouseUp(object sender, RoutedEventArgs e) {
+			if (_animationTimer.Enabled) //Do nothing when an operation is running
+				return;
+
+			if(Session.wunderClient.loggedIn)
+				Session.showTask(Session.wunderClient.Lists.Inbox.Id);
+			else
+				Session.Login();
 		}
 
 		void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

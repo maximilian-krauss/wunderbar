@@ -1,7 +1,7 @@
 Changelog
 =========
 
-### wunderbar 1.0 b3 (not released yet)
+### wunderbar 1.0 b3
 * [Bug] In some cases the transmitted date-value can be null which caused an NullReferenceException.
 * [Bug] Problem when inserting more as one task between one syncinterval (epic fail).
 * [Bug] If a task is marked as done wunderbar sets now the doneDate-property properly.

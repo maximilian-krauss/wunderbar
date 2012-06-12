@@ -180,7 +180,8 @@ namespace wunderbar.App.Core {
 			if (list.Shared == 1)
 				listRoot.Icon = readImageControlFromResource("shared");
 
-			listRoot.MouseDoubleClick += (o, e) => Session.showList(list);
+			//TODO: Uncomment when done
+			//listRoot.MouseDoubleClick += (o, e) => Session.showList(list);
 
 			//Add 'Add new task' item
 			var mnuAddNewTask = new MenuItem {Header = "Add new task", Icon = readImageControlFromResource("Tasks/plus")};

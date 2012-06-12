@@ -41,7 +41,13 @@
 
 			<!-- Taskname -->
 			<Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Margin="0 0 10 0"
-					BorderBrush="{x:Static SystemColors.ControlLightBrush}" BorderThickness="0 0 0 1" >
+					BorderThickness="0 0 0 1" >
+				<Border.BorderBrush>
+					<LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+						<GradientStop Color="{x:Static SystemColors.ControlLightColor}" Offset="0.5" />
+						<GradientStop Color="Transparent" Offset="1.0" />
+					</LinearGradientBrush>
+				</Border.BorderBrush>
 				<TextBox Foreground="#006E12" FontSize="16" Text="{Binding Name, ValidatesOnDataErrors=True}" 
 						 Margin="10 0 10 5" BorderBrush="Transparent"
 						 ToolTip="Enter a Name for your Task"/>

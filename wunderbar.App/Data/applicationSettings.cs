@@ -23,6 +23,7 @@ namespace wunderbar.App.Data {
 		private bool _showDueTasksInTrayIcon;
 		private bool _useNtlmProxyAuthentication;
 		private bool _showDueTasksOnTop;
+		private bool _sortByDueDate;
 
 		static applicationSettings() {
 			_token = Assembly.GetExecutingAssembly().GetName().GetPublicKey();
@@ -56,6 +57,9 @@ namespace wunderbar.App.Data {
 
 		/// <summary>Gets or sets whether due or overdue tasks should appear on top of the contextmenu.</summary>
 		public bool showDueTasksOnTop { get { return _showDueTasksOnTop; } set { _showDueTasksOnTop = value; onPropertyChanged("showDueTasksOnTop"); } }
+
+		/// <summary>Gets or sets whethers task should sorted by due date or not</summary>
+		public bool sortByDueDate { get { return _sortByDueDate; } set { _sortByDueDate = value; onPropertyChanged("sortByDueDate"); } }
 
 		/// <summary>Gets or sets whether wunderbar should run on startup or not.</summary>
 		[XmlIgnore]

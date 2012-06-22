@@ -30,6 +30,7 @@
 				<CheckBox IsChecked="{Binding autoRun}">Load wunderbar when my computer starts up</CheckBox>
 				<CheckBox IsChecked="{Binding showDueTasksInTrayIcon}">Show due tasks in trayicon</CheckBox>
 				<CheckBox IsChecked="{Binding showDueTasksOnTop}">Show due or overdue tasks on top of the contextmenu</CheckBox>
+				<CheckBox IsChecked="{Binding sortByDueDate}">Sort tasks by due date</CheckBox>
 				
 				<GroupBox Header="Background synchronization">
 					<StackPanel>

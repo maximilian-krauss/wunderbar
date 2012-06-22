@@ -65,7 +65,7 @@ namespace wunderbar.App.Core {
 		void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
 			if (e.PropertyName == "showDueTasksInTrayIcon")
 				showDueTasksInTrayIcon();
-			if(e.PropertyName =="showDueTasksOnTop")
+			if (e.PropertyName == "showDueTasksOnTop" || e.PropertyName == "sortByDueDate")
 				updateMenu();
 		}
 
@@ -188,7 +188,18 @@ namespace wunderbar.App.Core {
 			mnuAddNewTask.Click += (o, e) => Session.showTask(list.Id);
 			listRoot.Items.Add(mnuAddNewTask);
 
-			foreach (var task in Session.wunderClient.Tasks.Where(t => t.listId == list.Id && t.Done == 0 && t.Deleted == 0).OrderBy(t => t.Position))
+			/*var tasks = Session.wunderClient.Tasks.Where(t => t.listId == list.Id && t.Done == 0 && t.Deleted == 0).OrderByDescending(
+					t => t.Important).ThenBy(t => t.Position);*/
+
+			var tasks = from task in Session.wunderClient.Tasks
+						where task.listId == list.Id && task.Done == 0 && task.Deleted == 0
+						orderby task.Important descending , task.Position ascending 
+						select task;
+
+			if (Session.Settings.sortByDueDate)
+				tasks = tasks.OrderByDescending(t => t.Important).ThenByDescending(t => t.dueDate);
+
+			foreach (var task in tasks)
 				listRoot.Items.Add(createTaskMenuItem(task));
 
 			//Only add the separator if there are one or more tasks in this list

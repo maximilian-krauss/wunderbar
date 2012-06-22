@@ -1,6 +1,9 @@
 Changelog
 =========
 
+### wunderbar 1.0 b4 (not released yet!)
+* [Feature] Sort tasks by due date
+
 ### wunderbar 1.0 b3
 * [Bug] In some cases the transmitted date-value can be null which caused an NullReferenceException.
 * [Bug] Problem when inserting more as one task between one syncinterval (epic fail).

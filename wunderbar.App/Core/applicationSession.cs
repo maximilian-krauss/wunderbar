@@ -98,6 +98,11 @@ namespace wunderbar.App.Core {
 		public void runApplication() {
 			if (!string.IsNullOrWhiteSpace(Settings.eMail) && !string.IsNullOrWhiteSpace(Settings.Password))
 				Login(new digestCredentials {eMail = Settings.eMail, Password = Settings.Password});
+
+			//Show the use what he need to do when he openend the application
+			if (!wunderClient.loggedIn && string.IsNullOrWhiteSpace(Settings.eMail) && string.IsNullOrWhiteSpace(Settings.Password)) {
+				trayController.notifyInformation("Hi there! Looks like you didn't log in yet.\r\nJust click on this icon to open the logindialog.","wunderbar waits for you!");
+			}
 		}
 
 		/// <summary>Closes and Disposes all Applicationmodules.</summary>

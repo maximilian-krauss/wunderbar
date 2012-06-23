@@ -188,9 +188,6 @@ namespace wunderbar.App.Core {
 			mnuAddNewTask.Click += (o, e) => Session.showTask(list.Id);
 			listRoot.Items.Add(mnuAddNewTask);
 
-			/*var tasks = Session.wunderClient.Tasks.Where(t => t.listId == list.Id && t.Done == 0 && t.Deleted == 0).OrderByDescending(
-					t => t.Important).ThenBy(t => t.Position);*/
-
 			var tasks = from task in Session.wunderClient.Tasks
 						where task.listId == list.Id && task.Done == 0 && task.Deleted == 0
 						orderby task.Important descending , task.Position ascending 
@@ -235,6 +232,13 @@ namespace wunderbar.App.Core {
 		
 		public void notifyError(string message) {
 			_trayIcon.ShowBalloonTip(Session.applicationName, message, BalloonIcon.Error);
+		}
+
+		public void notifyInformation(string message) {
+			notifyInformation(message, Session.applicationName);
+		}
+		public void notifyInformation(string message, string title) {
+			_trayIcon.ShowBalloonTip(title, message, BalloonIcon.Info);
 		}
 
 		/// <summary>Adds an "Error"-item on top of the ContextMenu if an error occoured</summary>

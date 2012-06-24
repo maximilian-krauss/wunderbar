@@ -115,11 +115,11 @@ namespace wunderbar.App.Core {
 		/// <summary>
 		/// Will be raised if the hotkey is pressed (works only if registed in HotKeyHost)
 		/// </summary>
-		public event EventHandler<HotKeyEventArgs> HotKeyPressed;
+		public event EventHandler<hotKeyEventArgs> HotKeyPressed;
 
 		protected virtual void OnHotKeyPress() {
 			if (HotKeyPressed != null)
-				HotKeyPressed(this, new HotKeyEventArgs(this));
+				HotKeyPressed(this, new hotKeyEventArgs(this));
 		}
 
 		internal void RaiseOnHotKeyPressed() {

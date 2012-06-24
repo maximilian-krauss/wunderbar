@@ -18,7 +18,7 @@ This application is licened under The Code Project Open License (CPOL) 1.02 whic
 ###ToDo
 * Automatically sync every X Minutes **[done]**
 * Display the number of due Tasks inside the trayicon **[done]**
-* Global hotkeys for creating new tasks and lists
+* Global hotkeys for creating new tasks and lists **[done]**
 * Option to delete tasks
 * A smarter and faster way to create new tasks **[smart enough]**
 * Proxysupport (it already supports proxys which were set up global by internetsettings)

@@ -24,6 +24,8 @@ namespace wunderbar.App.Data {
 		private bool _useNtlmProxyAuthentication;
 		private bool _showDueTasksOnTop;
 		private bool _sortByDueDate;
+		private bool _hotkeyNewTask;
+		private bool _hotkeySync;
 
 		static applicationSettings() {
 			_token = Assembly.GetExecutingAssembly().GetName().GetPublicKey();
@@ -58,8 +60,14 @@ namespace wunderbar.App.Data {
 		/// <summary>Gets or sets whether due or overdue tasks should appear on top of the contextmenu.</summary>
 		public bool showDueTasksOnTop { get { return _showDueTasksOnTop; } set { _showDueTasksOnTop = value; onPropertyChanged("showDueTasksOnTop"); } }
 
-		/// <summary>Gets or sets whethers task should sorted by due date or not</summary>
+		/// <summary>Gets or sets whether task should sorted by due date or not</summary>
 		public bool sortByDueDate { get { return _sortByDueDate; } set { _sortByDueDate = value; onPropertyChanged("sortByDueDate"); } }
+
+		/// <summary>Gets or sets whether a global hotkey for new tasks should be registered or not.</summary>
+		public bool hotkeyNewTasks { get { return _hotkeyNewTask; } set { _hotkeyNewTask = value; onPropertyChanged("hotkeyNewTasks"); } }
+
+		/// <summary>Gets or sets whether a global hotkey for syncing should be registered or not.</summary>
+		public bool hotkeySync { get { return _hotkeySync; } set { _hotkeySync = value; onPropertyChanged("hotkeySync"); } }
 
 		/// <summary>Gets or sets whether wunderbar should run on startup or not.</summary>
 		[XmlIgnore]

@@ -70,6 +70,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\hotKey.cs" />
+    <Compile Include="Core\hotKeyAlreadyRegisteredException.cs" />
+    <Compile Include="Core\hotKeyEventArgs.cs" />
+    <Compile Include="Core\hotKeyHost.cs" />
     <Compile Include="Core\syncController.cs" />
     <Compile Include="Core\trayContextTypes.cs" />
     <Compile Include="Data\applicationSettings.cs" />

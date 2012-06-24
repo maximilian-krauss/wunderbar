@@ -14,7 +14,7 @@ using wunderbar.Api.dataContracts;
 namespace wunderbar.Api {
 	public sealed class wunderClient : IDisposable {
 		private readonly httpClient _httpClient;
-		private readonly digestCredentials _credentials;
+		private digestCredentials _credentials;
 
 		private const string _lsTasksFilename = "Tasks.json";
 		private const string _lsListsFilename = "Lists.json";
@@ -85,6 +85,9 @@ namespace wunderbar.Api {
 
 			_loggedIn = false;
 			userId = -1;
+			_credentials = new digestCredentials();
+			Tasks.Clear();
+			Lists.Clear();
 		}
 
 		/// <summary>Synchronizes the LocalStorage with the Wunderlist-Servers.</summary>

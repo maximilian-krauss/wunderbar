@@ -21,7 +21,7 @@ namespace wunderbar.App.Ui.Dialogs {
 		public trayWindow() {
 			InitializeComponent();
 			_session = new applicationSession(this);
-			_session.runApplication();
+			SourceInitialized += (o, e) => _session.runApplication();
 		}
 	}
 }

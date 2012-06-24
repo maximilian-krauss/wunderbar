@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -14,6 +15,7 @@ using wunderbar.Api.dataContracts;
 using wunderbar.Api.Extensions;
 using wunderbar.App.Data;
 using wunderbar.App.Ui.Dialogs;
+using System.Windows.Interop;
 
 namespace wunderbar.App.Core {
 	internal sealed class applicationSession : IDisposable {
@@ -24,6 +26,10 @@ namespace wunderbar.App.Core {
 
 		private LoggingConfiguration _loggingConfiguration;
 		private readonly Random _random;
+
+		//Hotkeys
+		private hotKey _htkAddTask;
+		private hotKey _htkSync;
 		
 		public applicationSession(Window owner) {
 			mainWindow = owner;
@@ -43,6 +49,12 @@ namespace wunderbar.App.Core {
 			//This should initialized at last...
 			syncController = new syncController(this);
 			trayController = new trayController(this);
+
+			//Refresh hotkey settings if their properties changed
+			Settings.PropertyChanged += (o, e) => {
+			                            	if (e.PropertyName == "hotkeyNewTasks" || e.PropertyName == "hotkeySync")
+			                            		setupHotKeys();
+			                            };
 		}
 
 		public event EventHandler trayContextUpdateRequired;
@@ -74,6 +86,9 @@ namespace wunderbar.App.Core {
 
 		public Logger Logger { get; private set; }
 
+		/// <summary>Gets access to the global hotkey manager.</summary>
+		public hotKeyHost hotKeys { get; private set; }
+
 		/// <summary>Returns an Option that indicates which Items from the ContextMenu should be displayed.</summary>
 		internal trayContextTypes trayContextType{
 			get {
@@ -103,6 +118,9 @@ namespace wunderbar.App.Core {
 			if (!wunderClient.loggedIn && string.IsNullOrWhiteSpace(Settings.eMail) && string.IsNullOrWhiteSpace(Settings.Password)) {
 				trayController.notifyInformation("Hi there! Looks like you didn't log in yet.\r\nJust click on this icon to open the logindialog.","wunderbar waits for you!");
 			}
+
+			//Because the hotKeyHost needs an active windowhandle it is important to initialize this when the (hidden) mainwindow is fully loaded and called this method
+			setupHotKeys();
 		}
 
 		/// <summary>Closes and Disposes all Applicationmodules.</summary>
@@ -240,6 +258,39 @@ namespace wunderbar.App.Core {
 			Logger = LogManager.GetLogger("Base");
 		}
 
+		private void setupHotKeys() {
+			//Initialize the Host if this is the first time we call this method
+			if (hotKeys == null)
+				hotKeys = new hotKeyHost((HwndSource)PresentationSource.FromVisual(Application.Current.MainWindow));
+
+			//Hotkeys
+			if (_htkAddTask == null) {
+				_htkAddTask = new hotKey(Key.T, ModifierKeys.Control | ModifierKeys.Alt);
+				_htkAddTask.HotKeyPressed += (o, e) => {
+				                             	if (wunderClient.loggedIn)
+				                             		showTask(wunderClient.Lists.Inbox.Id);
+				                             };
+				try {
+					hotKeys.AddHotKey(_htkAddTask);
+				}
+				catch (hotKeyAlreadyRegisteredException exc) {
+					Logger.WarnException("Unable to register hotkey \"CTRL+ALT+T\".", exc);
+				}
+			}
+			if (_htkSync == null) {
+				_htkSync = new hotKey(Key.S, ModifierKeys.Control | ModifierKeys.Alt);
+				_htkSync.HotKeyPressed += (o, e) => Synchronize();
+				try {
+					hotKeys.AddHotKey(_htkSync);
+				}
+				catch (hotKeyAlreadyRegisteredException exc) {
+					Logger.WarnException("Unable to register hotkey \"CTRL+ALT+S\".", exc);
+				}
+			}
+			_htkAddTask.Enabled = Settings.hotkeyNewTasks;
+			_htkSync.Enabled = Settings.hotkeySync;
+		}
+
 		void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
 			showExceptionDialog((Exception)e.ExceptionObject);
 		}
@@ -267,6 +318,8 @@ namespace wunderbar.App.Core {
 		#region IDisposable Members
 
 		public void Dispose() {
+			//Important as hell to dispose all the hotkey stuff
+			hotKeys.Dispose();
 			trayController.Dispose();
 			wunderClient.Dispose();
 		}

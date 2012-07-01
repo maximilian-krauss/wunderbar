@@ -26,6 +26,7 @@ namespace wunderbar.App.Data {
 		private bool _sortByDueDate;
 		private bool _hotkeyNewTask;
 		private bool _hotkeySync;
+		private bool _enforceSSLSecurity;
 
 		static applicationSettings() {
 			_token = Assembly.GetExecutingAssembly().GetName().GetPublicKey();
@@ -37,6 +38,7 @@ namespace wunderbar.App.Data {
 			_autoSyncInterval = 5;
 			_showDueTasksInTrayIcon = true;
 			_showDueTasksOnTop = true;
+			_enforceSSLSecurity = true;
 		}
 
 		/// <summary>Gets or sets the eMail-Address for Wunderlist.</summary>
@@ -68,6 +70,9 @@ namespace wunderbar.App.Data {
 
 		/// <summary>Gets or sets whether a global hotkey for syncing should be registered or not.</summary>
 		public bool hotkeySync { get { return _hotkeySync; } set { _hotkeySync = value; onPropertyChanged("hotkeySync"); } }
+
+		/// <summary>Gets or sets whether the public key of the SSL-certificate should be verified or not.</summary>
+		public bool enforceSSLSecurity { get { return _enforceSSLSecurity; } set { _enforceSSLSecurity = value; onPropertyChanged("enforceSSLSecurity"); } }
 
 		/// <summary>Gets or sets whether wunderbar should run on startup or not.</summary>
 		[XmlIgnore]

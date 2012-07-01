@@ -39,14 +39,17 @@ namespace wunderbar.Api {
 			if (handler != null) handler(this, e);
 		}
 
-		/// <summary>Returns all Lists from the Wunderlist-Account.</summary>
+		/// <summary>Returns all Lists from the Wunderlist-account.</summary>
 		public listCollection Lists { get; private set; }
 
-		/// <summary>Returns all Tasks from the Wunderlist-Account.</summary>
+		/// <summary>Returns all Tasks from the Wunderlist-account.</summary>
 		public taskCollection Tasks { get; private set; }
 
-		/// <summary>Gets or Sets the Directory in which the Tasks and Lists should be cached.</summary>
+		/// <summary>Gets or sets the directory in which the tasks and lists should be cached.</summary>
 		public string localStorageDirectory { get; set; }
+
+		/// <summary>Gets or sets whether the public key of the SSL-certificate should be verified or not.</summary>
+		public bool enforceSSLSecurity { get { return _httpClient.enforceSSLSecurity; } set { _httpClient.enforceSSLSecurity = value; } }
 
 		/// <summary>Returns if the User is logged in.</summary>
 		public bool loggedIn { get { return _loggedIn; } }
@@ -55,9 +58,9 @@ namespace wunderbar.Api {
 		public int userId { get; private set; }
 
 		/// <summary>Tries to Login to Wunderlist.</summary>
-		/// <param name="email">Your E-Mailaddress.</param>
-		/// <param name="password">Your Password.</param>
-		/// <returns>Returns true if the Login was successfull, otherwise false.</returns>
+		/// <param name="email">Your e-mailaddress.</param>
+		/// <param name="password">Your password.</param>
+		/// <returns>Returns true if the login was successfull, otherwise false.</returns>
 		public bool Login(string email, string password) {
 			_credentials.eMail = email;
 			_credentials.Password = password;

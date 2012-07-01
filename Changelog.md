@@ -5,6 +5,8 @@ Changelog
 * [Feature] Sort tasks by due date
 * [Feature] wunderbar displays a traybubble if the user openend the application the first time.
 * [Feature] Global shortcuts for creating a new task and syncing lists and tasks.
+* [Feature] wunderbar detects man-in-the-middle attacks with manipulated ssl-certificates (Ok, maybe a bit over the top, but it was interesting to implement :) )
+* [Bug] Traywindow dummy appeared sometimes
 
 ### wunderbar 1.0 b3
 * [Bug] In some cases the transmitted date-value can be null which caused an NullReferenceException.

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using wunderbar.Api.Requests;
 using wunderbar.Api.Responses;
@@ -16,12 +19,16 @@ using System.Web;
 namespace wunderbar.Api {
 	internal sealed class httpClient {
 
+		private const string _wunderlist_ssl_pbk = "3082010A0282010100B594F0F38E56EF9035B3392A3C02D909C5868F7F8299189FFEDD3EC4D7B547C8C718086EFDD4C4250FFF33E415E4BE5DEE801AEFA27E7C539A4A7F16FD3089D8E9F85B87B046FD9B12C1445817CC20874717D0A9BB01882DE8EE6226FAE37B9E17FA9A11FA1479D0C31E8DCA6F00AD046201C018E6DC3B018360E8BF31B650E43951BB9639EA2E972B9EF4F41F099435B149B30662CFB5891B92337A75FB65534384F685D2C43A4137EC20A38872D93EA3F967C0993F3FC457FCD4A1E373506618A229A5F254ADA4479425AFF9C755F10207058CE726E7A9A5FAAD3DC0DCFA6A825E0839AE5034046D74B7D2355AF3075C85A4225CBD1F3B052B731136AD0EFD0203010001";
+
 		public event EventHandler<httpRequestCreatedEventArgs> httpRequestCreated;
 
 		private void onHttpRequestCreated(httpRequestCreatedEventArgs e) {
 			EventHandler<httpRequestCreatedEventArgs> handler = httpRequestCreated;
 			if (handler != null) handler(this, e);
 		}
+
+		public bool enforceSSLSecurity { get; set; }
 
 		public TResponse httpPost<TRequest, TResponse>(TRequest request)
 			where TRequest : baseRequest
@@ -36,8 +43,12 @@ namespace wunderbar.Api {
 			httpRequest.ContentType = "application/x-www-form-urlencoded";
 			httpRequest.Accept = "application/json";
 			httpRequest.UserAgent = string.Format("wunderbar/v{0}", Assembly.GetExecutingAssembly().GetName().Version);
+			httpRequest.Headers.Add("enforceSSL", enforceSSLSecurity.ToString(CultureInfo.InvariantCulture));
 			//Allow 3rd parties to manipulate the request. Required for proxyconfiguration etc.
 			onHttpRequestCreated(new httpRequestCreatedEventArgs(httpRequest));
+
+			// allows for validation of SSL conversations
+			ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
 
 			httpRequest.ContentLength = requestData.Length;
 			httpRequest.GetRequestStream().Write(requestData, 0, requestData.Length);
@@ -96,6 +107,15 @@ namespace wunderbar.Api {
 			}
 			
 			return sbParams.ToString();
+		}
+
+		private static bool ValidateRemoteCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors policyErrors) {
+			//Check the SSL-certificate, if there is an man-in-the-middle-attack, the public key will be different from the internal stored one
+			var request = (sender as HttpWebRequest);
+			if(request != null && request.Headers["enforceSSL"] == "True" && certificate.GetPublicKeyString() != _wunderlist_ssl_pbk)
+				throw new wunderException("WARNING! The SSL-certificate has been manipulated!");
+
+			return policyErrors == SslPolicyErrors.None;
 		}
 
 		private TAttribute getAttribute<TAttribute>(PropertyInfo property) where TAttribute : Attribute {

@@ -42,7 +42,8 @@ namespace wunderbar.App.Core {
 
 			Settings = applicationSettings.Load(this);
 			wunderClient = new wunderClient {
-			                                	localStorageDirectory = applicationDataStorageDirectory
+			                                	localStorageDirectory = applicationDataStorageDirectory,
+												enforceSSLSecurity = Settings.enforceSSLSecurity
 			                                };
 			wunderClient.httpRequestCreated += wunderClient_httpRequestCreated;
 

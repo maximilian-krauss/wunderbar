@@ -4,7 +4,9 @@
 		Title="wunderbar" Height="0" Width="0"
 	    WindowStyle="None"
 		ShowInTaskbar = "false"
-		ShowActivated = "false">
+		ShowActivated = "false"
+		AllowsTransparency="True"
+		Background="Transparent">
 	<Grid>
 		
 	</Grid>

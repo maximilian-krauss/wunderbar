@@ -1,7 +1,7 @@
 Changelog
 =========
 
-### wunderbar 1.0 b4 (not released yet!)
+### wunderbar 1.0 b4
 * [Feature] Sort tasks by due date
 * [Feature] wunderbar displays a traybubble if the user openend the application the first time.
 * [Feature] Global shortcuts for creating a new task and syncing lists and tasks.

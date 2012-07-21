@@ -78,10 +78,10 @@ namespace wunderbar.Api {
 			return _loggedIn;
 		}
 
-		/// <summary>Clears the local Storage from the currently logged in User.</summary>
+		/// <summary>Clears the local storage from the currently logged in user.</summary>
 		public void Logout() {
 			if(!_loggedIn)
-				throw new wunderException("You need to Log-In before you can purge any Data.");
+				throw new wunderException("You need to log-in before you can purge any data.");
 
 			if(Directory.Exists(localStoragePath))
 				Directory.Delete(localStoragePath, true);
@@ -93,14 +93,14 @@ namespace wunderbar.Api {
 			Lists.Clear();
 		}
 
-		/// <summary>Synchronizes the LocalStorage with the Wunderlist-Servers.</summary>
+		/// <summary>Synchronizes the localstorage with the wunderlist-servers.</summary>
 		public void Synchronize() {
 
 			if (!_loggedIn)
-				throw new wunderException("You need to call Login(email, password) first before you can Start Synchronizing.");
+				throw new wunderException("You need to call Login(email, password) first before you can start synchronizing.");
 
 			/*
-				Synchronization Step 1
+				Synchronization step 1
 			 */
 			var step1Request = new syncStep1Request {
 			                                        	eMail = _credentials.eMail,
@@ -114,7 +114,7 @@ namespace wunderbar.Api {
 			if (step1Result.statusCode != statusCodes.SYNC_SUCCESS)
 				throw new synchronizationException(step1Request.Step, step1Result.statusCode);
 
-			//Add new Lists and Tasks
+			//Add new lists and tasks
 			if (step1Result.syncTable != null && step1Result.syncTable.newLists != null)
 				step1Result.syncTable.newLists.ForEach(l => Lists.addOrUpdateList(l));
 
@@ -128,7 +128,7 @@ namespace wunderbar.Api {
 
 
 			/*
-				Synchronization Step 2
+				Synchronization step 2
 			 */
 			var step2Request = new syncStep2Request {
 			                                        	eMail = _credentials.eMail,
@@ -160,7 +160,7 @@ namespace wunderbar.Api {
 				for (int i = 0; i < step2Result.syncTable.syncedTasks.Count; i++)
 					step2Request.syncTable.newTasks[i].Id = step2Result.syncTable.syncedTasks[i].Id;
 
-			//Seems like everything worked, save the Tasks and Lists locally
+			//Seems like everything worked, save the tasks and lists locally
 			writeLocalStorage();
 		}
 

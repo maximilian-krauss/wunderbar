@@ -57,7 +57,12 @@ namespace wunderbar.App.Core {
 				return;
 
 			if(Session.wunderClient.loggedIn)
+#if DEBUG
+				Session.showFlyout();
+#else
 				Session.showTask(Session.wunderClient.Lists.Inbox.Id);
+#endif
+				
 			else
 				Session.Login();
 		}
@@ -162,48 +167,10 @@ namespace wunderbar.App.Core {
 				_trayIcon.ContextMenu.Items.Insert(0, mnuLogout);
 				_trayIcon.ContextMenu.Items.Insert(0, mnuSynchronize);
 
-				//Add Tasks and Lists
-				foreach (var list in Session.wunderClient.Lists.Where(l => l.Deleted == 0).OrderByDescending(l => l.Position)) {
-					_trayIcon.ContextMenu.Items.Insert(0, buildTaskTree(list));
-				}
-
 				addDueTasks();
 			}
 			addError();
 			showDueTasksInTrayIcon(); //This needs to be called every time the menu updates
-		}
-
-		private MenuItem buildTaskTree(listType list) {
-			var listRoot = new MenuItem {Header = list.Name};
-			if (list.Inbox == 1)
-				listRoot.Icon = readImageControlFromResource("Tasks/inbox");
-			if (list.Shared == 1)
-				listRoot.Icon = readImageControlFromResource("shared");
-
-			//TODO: Uncomment when done
-			//listRoot.MouseDoubleClick += (o, e) => Session.showList(list);
-
-			//Add 'Add new task' item
-			var mnuAddNewTask = new MenuItem {Header = "Add new task", Icon = readImageControlFromResource("Tasks/plus")};
-			mnuAddNewTask.Click += (o, e) => Session.showTask(list.Id);
-			listRoot.Items.Add(mnuAddNewTask);
-
-			var tasks = from task in Session.wunderClient.Tasks
-						where task.listId == list.Id && task.Done == 0 && task.Deleted == 0
-						orderby task.Important descending , task.Position ascending 
-						select task;
-
-			if (Session.Settings.sortByDueDate)
-				tasks = tasks.OrderByDescending(t => t.Important).ThenByDescending(t => t.dueDate);
-
-			foreach (var task in tasks)
-				listRoot.Items.Add(createTaskMenuItem(task));
-
-			//Only add the separator if there are one or more tasks in this list
-			if (listRoot.Items.Count > 1) 
-				listRoot.Items.Insert(1, new Separator());
-
-			return listRoot;
 		}
 
 		private void addDueTasks() {
@@ -223,11 +190,12 @@ namespace wunderbar.App.Core {
 				_trayIcon.ContextMenu.Items.Insert(0, mnuTask);
 			}
 
-			if (tasksAdded == 0)
+			if (tasksAdded == 0) {
 				_trayIcon.ContextMenu.Items.Insert(0, new MenuItem {Header = "Yay! Nothing todo :)", IsEnabled = false});
+				tasksAdded++;
+			}
 
-			if (tasksAdded > 0)
-				_trayIcon.ContextMenu.Items.Insert(tasksAdded, new Separator());
+			_trayIcon.ContextMenu.Items.Insert(tasksAdded, new Separator());
 		}
 		
 		public void notifyError(string message) {

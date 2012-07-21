@@ -64,6 +64,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WPFToolkit.Extended">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.1.6.0\lib\net40\WPFToolkit.Extended.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -79,6 +82,7 @@
     <Compile Include="Data\applicationSettings.cs" />
     <Compile Include="Data\Converter\booleanConverter.cs" />
     <Compile Include="Data\Converter\prettyDateConverter.cs" />
+    <Compile Include="Data\Converter\prettyDateViewConverter.cs" />
     <Compile Include="Data\Converter\unixDateTimeConverter.cs" />
     <Compile Include="Data\Converter\visibilityConverter.cs" />
     <Compile Include="Ui\Dialogs\aboutDialog.xaml.cs">
@@ -86,6 +90,9 @@
     </Compile>
     <Compile Include="Ui\Dialogs\exceptionDialog.xaml.cs">
       <DependentUpon>exceptionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Dialogs\flyoutWindow.xaml.cs">
+      <DependentUpon>flyoutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ui\Dialogs\listDialog.xaml.cs">
       <DependentUpon>listDialog.xaml</DependentUpon>
@@ -99,11 +106,26 @@
     <Compile Include="Ui\Dialogs\trayWindow.xaml.cs">
       <DependentUpon>trayWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\FlyoutViews\IView.cs" />
+    <Compile Include="Ui\FlyoutViews\ListsView.xaml.cs">
+      <DependentUpon>ListsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\FlyoutViews\ShowViewEventArgs.cs" />
+    <Compile Include="Ui\FlyoutViews\TasksView.xaml.cs">
+      <DependentUpon>TasksView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\FlyoutViews\TaskView.xaml.cs">
+      <DependentUpon>TaskView.xaml</DependentUpon>
+    </Compile>
     <Page Include="Ui\Dialogs\aboutDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Ui\Dialogs\exceptionDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\Dialogs\flyoutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -137,6 +159,18 @@
     <Page Include="Ui\Dialogs\trayWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\FlyoutViews\ListsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\FlyoutViews\TasksView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\FlyoutViews\TaskView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -224,6 +258,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Gfx\Images\shared.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\back_button.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

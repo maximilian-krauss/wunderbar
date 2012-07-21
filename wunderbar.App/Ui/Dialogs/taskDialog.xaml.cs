@@ -34,12 +34,6 @@ namespace wunderbar.App.Ui.Dialogs {
 				btnClose.Content = "Add Task";
 				btnCancel.Visibility = Visibility.Visible;
 			}
-
-			//Show the postpone only, if the task is due or overdue
-			/*btnPostpone.Visibility = ((DataContext as taskType).canPostpone)
-			                         	? Visibility.Visible
-										: Visibility.Collapsed;*/
-
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e) {

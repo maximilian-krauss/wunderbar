@@ -16,13 +16,15 @@ using wunderbar.Api.Extensions;
 using wunderbar.App.Data;
 using wunderbar.App.Ui.Dialogs;
 using System.Windows.Interop;
+using wunderbar.App.Ui.FlyoutViews;
 
 namespace wunderbar.App.Core {
-	internal sealed class applicationSession : IDisposable {
+	public sealed class applicationSession : IDisposable {
 		private const string _portableIdentifier = "portable";
 		private const string _newTaskText = "<Enter a name for your task>";
 		private const int _randomMax = -10000;
 		private const int _randomMin = -99999;
+		private flyoutWindow _flyoutWindow;
 
 		private LoggingConfiguration _loggingConfiguration;
 		private readonly Random _random;
@@ -66,7 +68,7 @@ namespace wunderbar.App.Core {
 		/// <summary>Gets Access to the TrayIcon for Updating the NotifyIcon and displaying some Textbubbles.</summary>
 		internal trayController trayController { get; private set; }
 
-		public syncController syncController { get; private set; }
+		internal syncController syncController { get; private set; }
 
 		/// <summary>Returns the MainWindow-Dummy which handles the TrayIconstuff.</summary>
 		public Window mainWindow { get; private set; }
@@ -80,7 +82,7 @@ namespace wunderbar.App.Core {
 		/// <summary>Returns the current Applicationversion.</summary>
 		public Version applicationVersion { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
 
-		public string displayVersion { get { return string.Format("{0} beta 4", applicationVersion); } }
+		public string displayVersion { get { return string.Format("{0} beta 5", applicationVersion); } }
 
 		/// <summary>Returns the last error which occoured while logging in or syncing.</summary>
 		public Exception lastError { get; private set; }
@@ -222,23 +224,32 @@ namespace wunderbar.App.Core {
 			                      });
 		}
 		public void showTask(taskType task) {
-			var dialog = new taskDialog {ListsItemSource = wunderClient.Lists, DataContext = task};
-			dialog.ShowDialog();
+			showFlyout(new TaskView(), task);
+		}
 
-			//New Task, needs to be added to our TaskList
-			if (dialog.DialogResult.HasValue && dialog.DialogResult.Value && task.Id <= 0 && task.Name != _newTaskText)
-				wunderClient.Tasks.addOrUpdateTask(task);
-
-			onTrayContextUpdateRequired(EventArgs.Empty);
+		public void showFlyout() {
+			showFlyout(null,null);
+		}
+		public void showFlyout(IView view, object argument) {
+			if (_flyoutWindow != null) {
+				_flyoutWindow.BringIntoView();
+				_flyoutWindow.Activate();
+				return;
+			}
+			_flyoutWindow = new flyoutWindow(this, view, argument);
+			_flyoutWindow.Closed += (o, e) => {
+			                        	_flyoutWindow = null;
+			                        	onTrayContextUpdateRequired(EventArgs.Empty);
+			                        };
+			//Make sure the window is displayed
+			_flyoutWindow.Show();
+			_flyoutWindow.BringIntoView();
+			_flyoutWindow.Activate();
 		}
 
 		void wunderClient_httpRequestCreated(object sender, httpRequestCreatedEventArgs e) {
 			if (Settings.useNtlmProxyAuthentication && e.Request.Proxy != null)
 				e.Request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-		}
-
-		public void showList(listType list) {
-			new listDialog {DataContext = list}.ShowDialog();
 		}
 
 		private void initializeLogger() {

@@ -7,12 +7,14 @@ using wunderbar.Api.Extensions;
 
 namespace wunderbar.App.Data.Converter {
 	public class prettyDateConverter : IValueConverter {
+		protected const string NO_DATE_STRING = "No date set";
+
 		#region IValueConverter Members
 
-		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+		public virtual object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
 			long? ticks = (long?) value;
 			if (ticks == null || ticks == 0)
-				return "No date set";
+				return NO_DATE_STRING;
 
 			return DateTime.Now.FromUnixTimeStamp(ticks).ToRelativeDate();
 		}

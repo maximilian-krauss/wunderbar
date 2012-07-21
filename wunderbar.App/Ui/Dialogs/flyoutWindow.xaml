@@ -1,0 +1,41 @@
+﻿<Window x:Class="wunderbar.App.Ui.Dialogs.flyoutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="flyoutWindow" Height="350" Width="300"
+		ShowInTaskbar="False" WindowStyle="None"
+		
+		Loaded="Window_Loaded" Deactivated="Window_Deactivated">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<DockPanel Grid.Row="0" Margin="6">
+			<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+				<Button Name="btnBack" Background="Transparent" BorderBrush="{x:Null}" Margin="2 4" Click="btnBack_Click">
+					<Image Source="/Gfx/Images/back_button.png" Stretch="None" />
+				</Button>
+				<TextBlock x:Name="txbTitle" FontSize="16" Foreground="#051153" DockPanel.Dock="Top" Margin="0 5">What's going on today?</TextBlock>
+			</StackPanel>
+			<DockPanel x:Name="dpnView" />
+		</DockPanel>
+
+		<Border Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="#CCD9EA">
+			<Border.Background>
+				<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+					<GradientStop Color="#CCD9EA" Offset="0.0" />
+					<GradientStop Color="#F1F5FB" Offset="0.05" />
+				</LinearGradientBrush>
+			</Border.Background>
+			<WrapPanel Margin="6 10" VerticalAlignment="Center" HorizontalAlignment="Center">
+				<TextBlock>
+					<Hyperlink Foreground="#051153" FontStyle="Normal" TextDecorations="None">Add a new task</Hyperlink>
+				</TextBlock>
+			</WrapPanel>
+		</Border>		
+	</Grid>
+</Window>

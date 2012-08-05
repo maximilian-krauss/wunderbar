@@ -4,7 +4,7 @@ wunderbar
 wunderbar is a fancy client for [wunderlist](http://www.wunderlist.com) on windows.
 
 Looking for something compiled? <br />
-The latest version is available for download on my [projectpage](http://coffeeinjection.com#wunderbar).
+The latest version is available for download on my [projectpage](http://coffeeinjection.com/App/wunderbar).
 
 
 ### Copyright and License

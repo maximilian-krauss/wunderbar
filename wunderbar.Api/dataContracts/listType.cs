@@ -25,5 +25,9 @@ namespace wunderbar.Api.dataContracts {
 		[httpClientIgnoreProperty]
 		public int taskCount { get; set; }
 
+		[IgnoreDataMember]
+		[httpClientIgnoreProperty]
+		public int dueTaskCount { get; set; }
+
 	}
 }

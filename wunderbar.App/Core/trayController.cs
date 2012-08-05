@@ -57,12 +57,7 @@ namespace wunderbar.App.Core {
 				return;
 
 			if(Session.wunderClient.loggedIn)
-#if DEBUG
 				Session.showFlyout();
-#else
-				Session.showTask(Session.wunderClient.Lists.Inbox.Id);
-#endif
-				
 			else
 				Session.Login();
 		}

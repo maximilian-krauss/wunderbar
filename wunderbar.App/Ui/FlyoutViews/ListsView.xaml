@@ -3,12 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:local="clr-namespace:wunderbar.App.Data.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-	
+	<UserControl.Resources>
+		<local:visibilityConverter x:Key="visibleConverter" />
+	</UserControl.Resources>
 	<ListBox Name="lstTasks" HorizontalContentAlignment="Stretch"
 					 ItemContainerStyle="{StaticResource SimpleListBoxItem}"
-					 BorderThickness="0">
+					 BorderThickness="0" x:FieldModifier="private">
 		<ListBox.ItemTemplate>
 			<DataTemplate>
 				<Border BorderBrush="#D7D7D7" Margin="2 2" BorderThickness="1 1 1 2" CornerRadius="4" Cursor="Hand">
@@ -28,7 +31,12 @@
 						</Grid.RowDefinitions>
 						<TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" Padding="2 0" FontSize="12" Foreground="#545454" />
 						<Border Grid.Row="0" Grid.Column="1" BorderBrush="#D7D7D7" BorderThickness="1" CornerRadius="4" Background="#FFFFFF">
-							<TextBlock Margin="6 1" Text="{Binding taskCount}" />
+							<StackPanel Orientation="Horizontal" Margin="6 1">
+								<TextBlock Text="{Binding taskCount}" />
+								<TextBlock Visibility="{Binding dueTaskCount, Converter={StaticResource visibleConverter}}"
+										   Text="{Binding dueTaskCount}" Foreground="Red" FontWeight="Bold"
+										   Padding="5 0 0 0"/>
+							</StackPanel>
 						</Border>
 					</Grid>
 				</Border>

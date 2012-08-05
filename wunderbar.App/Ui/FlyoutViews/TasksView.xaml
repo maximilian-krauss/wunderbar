@@ -17,7 +17,7 @@
 			
 			<ListBox Name="lstTasks" HorizontalContentAlignment="Stretch"
 							 ItemContainerStyle="{StaticResource SimpleListBoxItem}"
-							 BorderThickness="0">
+							 BorderThickness="0" x:FieldModifier="private">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<Border BorderBrush="#D7D7D7" Margin="2 2" BorderThickness="1 1 1 2" CornerRadius="4" Cursor="Hand">

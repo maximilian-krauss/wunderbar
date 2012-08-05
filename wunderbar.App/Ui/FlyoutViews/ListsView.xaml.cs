@@ -30,7 +30,11 @@ namespace wunderbar.App.Ui.FlyoutViews {
 		public void ViewLoaded(object args) {
 			//TODO: Find a better solution for this
 			var lists = Session.wunderClient.Lists.Where(l => l.Deleted == 0).OrderBy(l => l.Position);
-			lists.ToList().ForEach(l => l.taskCount = Session.wunderClient.Tasks.Count(t => t.listId == l.Id && t.Done == 0 && t.Deleted == 0));
+			lists.ToList().ForEach(l => {
+				l.taskCount = Session.wunderClient.Tasks.Count(t => t.listId == l.Id && t.Done == 0 && t.Deleted == 0);
+				l.dueTaskCount =
+					Session.wunderClient.Tasks.Count(t => t.listId == l.Id && t.Done == 0 && t.Deleted == 0 && t.Date > 0 && t.dueDate <= DateTime.Now.Date);
+			});
 
 			lstTasks.ItemsSource = lists;
 		}

@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using wunderbar.App.Core;
 using wunderbar.App.Ui.FlyoutViews;
+using System.Diagnostics;
 
 namespace wunderbar.App.Ui.Dialogs {
 	public partial class flyoutWindow {
@@ -25,19 +26,18 @@ namespace wunderbar.App.Ui.Dialogs {
 				view.Session = _session;
 
 			_view = view;
+			view.ViewLoaded(args);
 			dpnView.Children.Clear();
 			dpnView.Children.Add((UserControl)view);
 			txbTitle.Text = view.Title;
 			btnBack.Visibility = (view.SupportsBack ? Visibility.Visible : Visibility.Collapsed);
-			view.ViewLoaded(args);
 			view.ShowView += (o, e) => ShowView(e.View, e.Arguments);
-
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e) {
 			var desktopWorkingArea = SystemParameters.WorkArea;
-			Left = desktopWorkingArea.Right - (Width + 10);
-			Top = desktopWorkingArea.Bottom - (Height + 10);
+			Left = desktopWorkingArea.Right - (Width + 20);
+			Top = desktopWorkingArea.Bottom - (Height + 20);
 		}
 
 		private void Window_Deactivated(object sender, EventArgs e) {
@@ -47,6 +47,10 @@ namespace wunderbar.App.Ui.Dialogs {
 		private void btnBack_Click(object sender, RoutedEventArgs e) {
 			if (_view != null)
 				_view.GoBack();
+		}
+
+		private void Hyperlink_Click(object sender, RoutedEventArgs e) {
+			Process.Start("https://www.wunderlist.com");
 		}
 	}
 }

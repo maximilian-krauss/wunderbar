@@ -29,7 +29,19 @@ namespace wunderbar.Api.dataContracts {
 		public long? Date { get { return _date; } set { _date = value; onPropertyChanged("Date"); } }
 
 		[DataMember(Name = "done")]
-		public int Done { get { return _done; } set { _done = value; onPropertyChanged("Done"); } }
+		public int Done {
+			get { return _done; }
+			set {
+				_done = value;
+
+				//Update doneDate
+				if (value == 1 && trackChanges)
+					doneDate = (long?) DateTime.Now.ToUnixTimeStamp();
+
+				onPropertyChanged("Done");
+
+			}
+		}
 
 		[DataMember(Name = "done_date")]
 		public long? doneDate { get { return _doneDate; } set { _doneDate = value; onPropertyChanged("doneDate"); } }

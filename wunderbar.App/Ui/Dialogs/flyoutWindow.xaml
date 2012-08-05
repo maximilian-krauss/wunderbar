@@ -19,7 +19,7 @@
 				<Button Name="btnBack" Background="Transparent" BorderBrush="{x:Null}" Margin="2 4" Click="btnBack_Click">
 					<Image Source="/Gfx/Images/back_button.png" Stretch="None" />
 				</Button>
-				<TextBlock x:Name="txbTitle" FontSize="16" Foreground="#051153" DockPanel.Dock="Top" Margin="0 5">What's going on today?</TextBlock>
+				<TextBlock x:Name="txbTitle" FontSize="15" Foreground="#051153" DockPanel.Dock="Top" Margin="0 5">What's going on today?</TextBlock>
 			</StackPanel>
 			<DockPanel x:Name="dpnView" />
 		</DockPanel>
@@ -33,7 +33,7 @@
 			</Border.Background>
 			<WrapPanel Margin="6 10" VerticalAlignment="Center" HorizontalAlignment="Center">
 				<TextBlock>
-					<Hyperlink Foreground="#051153" FontStyle="Normal" TextDecorations="None">Add a new task</Hyperlink>
+					<Hyperlink Foreground="#051153" FontStyle="Normal" TextDecorations="None" Click="Hyperlink_Click">Open Wunderlist website</Hyperlink>
 				</TextBlock>
 			</WrapPanel>
 		</Border>		

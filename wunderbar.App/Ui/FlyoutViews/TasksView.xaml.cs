@@ -23,7 +23,7 @@ namespace wunderbar.App.Ui.FlyoutViews {
 		public event EventHandler<ShowViewEventArgs> ShowView;
 
 		public string Title {
-			get { return "Tasks"; }
+			get { return _list != null ? _list.Name : "Tasks"; }
 		}
 
 		public applicationSession Session { get; set; }
@@ -51,8 +51,12 @@ namespace wunderbar.App.Ui.FlyoutViews {
 		#endregion
 
 		private void UpdateBinding() {
-			lstTasks.ItemsSource =
-				Session.wunderClient.Tasks.Where(t => t.Deleted == 0 && t.Done == 0 && t.listId == _list.Id).OrderBy(t => t.Important).ThenBy(t => t.Position);
+			var tasks = Session.wunderClient.Tasks.Where(t => t.Deleted == 0 && t.Done == 0 && t.listId == _list.Id).OrderByDescending(t => t.Important).ThenBy(t => t.Position);
+
+			if (Session.Settings.sortByDueDate)
+				tasks = tasks.OrderByDescending(t => t.Important).ThenByDescending(t => t.dueDate);
+
+			lstTasks.ItemsSource = tasks;
 		}
 
 		private void TextBox_KeyUp(object sender, KeyEventArgs e) {
@@ -66,7 +70,8 @@ namespace wunderbar.App.Ui.FlyoutViews {
 		private taskType ParseTask(string taskText) {
 			var task = new taskType {
 			                        	listId = _list.Id,
-			                        	Id = new Random(Environment.TickCount).Next(-99999, -100)
+			                        	Id = new Random(Environment.TickCount).Next(-99999, -100),
+										userId = Session.wunderClient.userId
 			                        };
 
 			if (taskText.StartsWith("*") || taskText.StartsWith("!")) {

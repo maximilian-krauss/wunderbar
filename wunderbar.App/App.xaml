@@ -37,6 +37,126 @@
 					</Setter.Value>
 				</Setter>
 			</Style>
+
+			<Style x:Key="NoChromeButton" TargetType="{x:Type Button}">
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="BorderThickness" Value="1"/>
+				<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+				<Setter Property="HorizontalContentAlignment" Value="Center"/>
+				<Setter Property="VerticalContentAlignment" Value="Center"/>
+				<Setter Property="Padding" Value="1"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type Button}">
+							<Grid x:Name="Chrome" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+								<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+							</Grid>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsEnabled" Value="false">
+									<Setter Property="Foreground" Value="#ADADAD"/>
+									<Setter Property="Opacity" TargetName="Chrome" Value="0.5"/>
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<Style x:Key="WarnButton" TargetType="{x:Type Button}">
+				<Setter Property="FontSize" Value="14" />
+				<Setter Property="Foreground" Value="#AE0000" />
+				<Setter Property="Cursor" Value="Hand" />
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type Button}">
+							<Border BorderBrush="#DDDDDD" BorderThickness="1.5 1 1.5 2" CornerRadius="3" x:Name="ButtonBorder">
+								<Border.Background>
+									<LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+										<GradientStop Color="#F5F5F5" Offset="0" />
+										<GradientStop Color="#E9E9E9" Offset="1" />
+									</LinearGradientBrush>
+								</Border.Background>
+								<ContentPresenter x:Name="ButtonContentPresenter"
+										  VerticalAlignment="Center"
+										  HorizontalAlignment="Center"
+												  Margin="0 6"/>
+							</Border>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter Property="Foreground" Value="#FFFFFF" />
+									<Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{x:Null}" />
+									<Setter Property="Background" TargetName="ButtonBorder">
+										<Setter.Value>
+											<LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+												<GradientStop Color="#DB5E58" Offset="0" />
+												<GradientStop Color="#B43731" Offset="1" />
+											</LinearGradientBrush>
+										</Setter.Value>
+									</Setter>
+								</Trigger>
+								<Trigger Property="IsPressed" Value="True">
+									<Setter Property="Background" TargetName="ButtonBorder">
+										<Setter.Value>
+											<LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+												<GradientStop Color="#681F1D" Offset="0" />
+												<GradientStop Color="#B43731" Offset="1" />
+											</LinearGradientBrush>
+										</Setter.Value>
+									</Setter>
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<Style x:Key="OkButton" TargetType="{x:Type Button}">
+				<Setter Property="FontSize" Value="14" />
+				<Setter Property="Foreground" Value="#509338" />
+				<Setter Property="Cursor" Value="Hand" />
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type Button}">
+							<Border BorderBrush="#DDDDDD" BorderThickness="1.5 1 1.5 2" CornerRadius="3" x:Name="ButtonBorder">
+								<Border.Background>
+									<LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+										<GradientStop Color="#F5F5F5" Offset="0" />
+										<GradientStop Color="#E9E9E9" Offset="1" />
+									</LinearGradientBrush>
+								</Border.Background>
+								<ContentPresenter x:Name="ButtonContentPresenter"
+										  VerticalAlignment="Center"
+										  HorizontalAlignment="Center"
+												  Margin="0 6"/>
+							</Border>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter Property="Foreground" Value="#FFFFFF" />
+									<Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{x:Null}" />
+									<Setter Property="Background" TargetName="ButtonBorder">
+										<Setter.Value>
+											<LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+												<GradientStop Color="#89DC6C" Offset="0" />
+												<GradientStop Color="#61B145" Offset="1" />
+											</LinearGradientBrush>
+										</Setter.Value>
+									</Setter>
+								</Trigger>
+								<Trigger Property="IsPressed" Value="True">
+									<Setter Property="Background" TargetName="ButtonBorder">
+										<Setter.Value>
+											<LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+												<GradientStop Color="#4C8734" Offset="0" />
+												<GradientStop Color="#61B145" Offset="1" />
+											</LinearGradientBrush>
+										</Setter.Value>
+									</Setter>
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
 		</ResourceDictionary>		
 	</Application.Resources>
 </Application>

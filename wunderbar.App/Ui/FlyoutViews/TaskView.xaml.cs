@@ -7,9 +7,6 @@ using wunderbar.App.Core;
 using System.Linq;
 
 namespace wunderbar.App.Ui.FlyoutViews {
-	/// <summary>
-	/// Interaction logic for TaskView.xaml
-	/// </summary>
 	public partial class TaskView : UserControl, IView {
 		private taskType _task;
 
@@ -61,5 +58,15 @@ namespace wunderbar.App.Ui.FlyoutViews {
 		public Action Action { get; set; }
 
 		#endregion
+
+		private void CompleteTask_Click(object sender, RoutedEventArgs e) {
+			_task.markAsDone();
+			GoBack();
+		}
+
+		private void DeleteTask_Click(object sender, RoutedEventArgs e) {
+			_task.Deleted = 1;
+			GoBack();
+		}
 	}
 }

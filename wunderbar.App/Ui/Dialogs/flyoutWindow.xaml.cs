@@ -15,10 +15,14 @@ namespace wunderbar.App.Ui.Dialogs {
 		public flyoutWindow(applicationSession session, IView view, object argument) {
 			InitializeComponent();
 			_session = session;
-			if(view != null)
-				ShowView(view,argument);
+			var desktopWorkingArea = SystemParameters.WorkArea;
+			Left = desktopWorkingArea.Right - (Width + 20);
+			Top = desktopWorkingArea.Bottom - (Height + 20);
+
+			if (view != null)
+				ShowView(view, argument);
 			else
-				ShowView(new ListsView(), null);			
+				ShowView(session.wunderClient.loggedIn ? (IView) new ListsView() : new LoginView(), null);
 		}
 
 		private void ShowView(IView view, object args) {
@@ -32,12 +36,6 @@ namespace wunderbar.App.Ui.Dialogs {
 			txbTitle.Text = view.Title;
 			btnBack.Visibility = (view.SupportsBack ? Visibility.Visible : Visibility.Collapsed);
 			view.ShowView += (o, e) => ShowView(e.View, e.Arguments);
-		}
-
-		private void Window_Loaded(object sender, RoutedEventArgs e) {
-			var desktopWorkingArea = SystemParameters.WorkArea;
-			Left = desktopWorkingArea.Right - (Width + 20);
-			Top = desktopWorkingArea.Bottom - (Height + 20);
 		}
 
 		private void Window_Deactivated(object sender, EventArgs e) {

@@ -21,12 +21,20 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<StackPanel Grid.Row="0">
-			<xctk:WatermarkTextBox Text="{Binding Name}" BorderBrush="Transparent" Foreground="#006E12" FontSize="14" Margin="0 0 0 0"
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Image Source="/Gfx/Images/Tasks/star.png" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0"
+					   Width="16" Height="16" Margin="0 0 2 0" Visibility="{Binding Important, Converter={StaticResource visibleConverter}}"/>
+				<xctk:WatermarkTextBox Text="{Binding Name}" BorderBrush="Transparent" Foreground="#006E12" FontSize="14" Margin="0 0 0 0" Grid.Column="1"
 								   Watermark="Enter a name for your task"/>
-			<CheckBox IsChecked="{Binding Important, Converter={StaticResource boolConverter}}">Important</CheckBox>
-			<CheckBox IsChecked="{Binding Done, Converter={StaticResource boolConverter}}">Done</CheckBox>
+			</Grid>
+			<CheckBox IsChecked="{Binding Important, Converter={StaticResource boolConverter}}">Starred</CheckBox>
 			<ComboBox Name="cboLists" Grid.Column="1" Grid.Row="2" Margin="0 5"
 					  DisplayMemberPath="Name" SelectedValuePath="Id"
 					  SelectedValue="{Binding listId}" x:FieldModifier="private"></ComboBox>
@@ -42,20 +50,13 @@
 				</Grid.RowDefinitions>
 				<Label Grid.Column="0" Grid.Row="0" Margin="0 0" VerticalAlignment="Center" HorizontalAlignment="Left">Due:</Label>
 				<StackPanel Grid.Column="1" Grid.Row="0" Margin="0" Orientation="Horizontal">
-					<StackPanel.Resources>
-						<Style TargetType="{x:Type Button}">
-							<Setter Property="Margin" Value="4" />
-							<Setter Property="Padding" Value="2 0" />
-							<Setter Property="Background" Value="Transparent" />
-							<Setter Property="BorderBrush" Value="{x:Null}" />
-						</Style>
-					</StackPanel.Resources>
 					<Label VerticalAlignment="Center" Content="{Binding Date, Converter={StaticResource prettyDateConverter}, Mode=OneWay}" />
-					<Button Click="dateTriggerButton_Click" Name="dateTriggerButton"
-						ToolTip="Sets a due date for this task.">
+					<Button Click="dateTriggerButton_Click" Name="dateTriggerButton" Style="{StaticResource NoChromeButton}"
+						ToolTip="Sets a due date for this task." Margin="4" Padding="2 0" Cursor="Hand">
 						<Image Width="16" Height="16" Source="/Gfx/Images/Tasks/calendar.png" />
 					</Button>
-					<Button Click="btnNoDate_Click" ToolTip="Removes the due date for this task.">
+					<Button Click="btnNoDate_Click" ToolTip="Removes the due date for this task." Style="{StaticResource NoChromeButton}"
+							Margin="4" Padding="2 0" Cursor="Hand">
 						<Image Width="16" Height="16" Source="/Gfx/Images/Tasks/no_date.png" />
 					</Button>
 				</StackPanel>
@@ -73,5 +74,18 @@
 		<xctk:WatermarkTextBox Grid.Row="1" Watermark="A place for your notes" TextWrapping="NoWrap" AcceptsReturn="True"
 							   VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto"
 							   Text="{Binding Note}"/>
+
+		<Grid Grid.Row="2" Margin="0 5 0 0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="2*"/>
+				<ColumnDefinition Width="2*"/>
+			</Grid.ColumnDefinitions>
+			<Button Style="{StaticResource OkButton}" Grid.Column="0" Margin="0 0 5 0" Click="CompleteTask_Click">
+				Complete
+			</Button>
+			<Button Style="{StaticResource WarnButton}" Grid.Column="1" Margin="5 0 0 0" Click="DeleteTask_Click">
+				Delete
+			</Button>
+		</Grid>
 	</Grid>
 </UserControl>

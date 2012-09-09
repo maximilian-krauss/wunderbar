@@ -5,11 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 			 xmlns:local="clr-namespace:wunderbar.App.Data.Converter"
+			 xmlns:i="clr-namespace:wunderbar.App.Data.Behaviors"
+			 xmlns:Interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
 		<local:prettyDateViewConverter x:Key="prettyDateConverter" />
 		<local:visibilityConverter x:Key="visibleConverter" />
+		<local:inverseVisibilityConverter x:Key="invVisibleConverter" />
 	</UserControl.Resources>
 	<ScrollViewer>
 		<StackPanel>
@@ -18,6 +21,9 @@
 			<ListBox Name="lstTasks" HorizontalContentAlignment="Stretch"
 							 ItemContainerStyle="{StaticResource SimpleListBoxItem}"
 							 BorderThickness="0" x:FieldModifier="private">
+				<Interactivity:Interaction.Behaviors>
+					<i:IgnoreMouseWheelBehavior />
+				</Interactivity:Interaction.Behaviors>
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<Border BorderBrush="#D7D7D7" Margin="2 2" BorderThickness="1 1 1 2" CornerRadius="4" Cursor="Hand">
@@ -27,9 +33,10 @@
 									<GradientStop Color="#E7E7E7" Offset="1.5" />
 								</LinearGradientBrush>
 							</Border.Background>
-							<StackPanel Orientation="Horizontal" Margin="5">
+							<StackPanel Orientation="Horizontal" Margin="5 3">
 								<CheckBox IsChecked="{Binding Done}" VerticalAlignment="Center" Padding="2 0" />
 								<Image Visibility="{Binding Important, Converter={StaticResource visibleConverter}}" Margin="0 2" Source="/Gfx/Images/Tasks/important.png" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Top" />
+								<Image Visibility="{Binding Important, Converter={StaticResource invVisibleConverter}}" Margin="0 2" Width="1" Height="16" HorizontalAlignment="Center"  VerticalAlignment="Top" />
 								<TextBlock Text="{Binding Name}" VerticalAlignment="Center" Padding="2 0" FontSize="11" Foreground="#545454" />
 								<TextBlock Text="{Binding Date, Converter={StaticResource prettyDateConverter}, Mode=OneWay}" VerticalAlignment="Center"
 										   Padding="2 0" Foreground="#969696" FontSize="9"/>

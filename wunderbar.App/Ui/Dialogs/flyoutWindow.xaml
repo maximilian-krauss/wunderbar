@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="flyoutWindow" Height="350" Width="300"
 		ShowInTaskbar="False" WindowStyle="None"
-		
-		Loaded="Window_Loaded" Deactivated="Window_Deactivated">
+		WindowStartupLocation="Manual"
+		Deactivated="Window_Deactivated">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
@@ -16,7 +16,7 @@
 
 		<DockPanel Grid.Row="0" Margin="6">
 			<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-				<Button Name="btnBack" Background="Transparent" BorderBrush="{x:Null}" Margin="2 4" Click="btnBack_Click">
+				<Button Name="btnBack" Style="{StaticResource NoChromeButton}" Margin="2 4" Click="btnBack_Click" x:FieldModifier="private" Cursor="Hand">
 					<Image Source="/Gfx/Images/back_button.png" Stretch="None" />
 				</Button>
 				<TextBlock x:Name="txbTitle" FontSize="15" Foreground="#051153" DockPanel.Dock="Top" Margin="0 5">What's going on today?</TextBlock>

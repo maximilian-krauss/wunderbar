@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -82,7 +84,7 @@ namespace wunderbar.App.Core {
 		/// <summary>Returns the current Applicationversion.</summary>
 		public Version applicationVersion { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
 
-		public string displayVersion { get { return string.Format("{0} beta 5", applicationVersion); } }
+		public string displayVersion { get { return string.Format("{0} beta 6", applicationVersion); } }
 
 		/// <summary>Returns the last error which occoured while logging in or syncing.</summary>
 		public Exception lastError { get; private set; }
@@ -134,10 +136,7 @@ namespace wunderbar.App.Core {
 
 		/// <summary>Displays the Logindialog and tries to Login to Wunderlist.</summary>
 		public void Login() {
-			var login = new loginDialog();
-			login.ShowDialog();
-			if (login.DialogResult.HasValue && login.DialogResult.Value)
-				Login(login.Credentials);
+			showFlyout(new LoginView(), null);
 		}
 
 		/// <summary>Tries to Login to Wunderlist with the Credentials provided by the credentials-param.</summary>
@@ -245,6 +244,51 @@ namespace wunderbar.App.Core {
 			_flyoutWindow.Show();
 			_flyoutWindow.BringIntoView();
 			_flyoutWindow.Activate();
+		}
+
+		public taskType createTaskFromString(string taskString) {
+			return createTaskFromString(taskString, wunderClient.Lists.Inbox.Id);
+		}
+		public taskType createTaskFromString(string taskString, int listId) {
+			if (string.IsNullOrEmpty(taskString))
+				return null;
+
+			var task = new taskType {
+				listId = listId,
+				Id = new Random(Environment.TickCount).Next(-99999, -100),
+				userId = wunderClient.userId
+			};
+
+			//check if the task should be prioritized
+			if (taskString.StartsWith("*") || taskString.StartsWith("!")) {
+				task.Important = 1;
+				taskString = taskString.Substring(1).Trim();
+			}
+
+			//try to identify target list with a hashtag the user maybe provided
+			var hashtags = taskString.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries).Where(w => w.StartsWith("#"));
+			foreach (var tag in hashtags) {
+				var list = wunderClient.Lists.FirstOrDefault(l => l.Name.ToLowerInvariant() == tag.Replace("#", ""));
+				if (list == null) continue;
+				
+				task.listId = list.Id;
+				taskString = taskString
+					.Replace(tag, "")
+					.Trim();
+				break;
+			}
+
+			var knownDates = new Dictionary<string, DateTime> { { "today", DateTime.Now.Date }, { "tomorrow", DateTime.Now.AddDays(1).Date } };
+			if (taskString.Contains(" ")) {
+				var lastWord = taskString.Substring(taskString.LastIndexOf(' ') + 1).ToLowerInvariant();
+				if (knownDates.ContainsKey(lastWord)) {
+					task.dueDate = knownDates[lastWord];
+					taskString = taskString.Substring(0, taskString.LastIndexOf(' ')).Trim();
+				}
+			}
+
+			task.Name = taskString;
+			return task;
 		}
 
 		void wunderClient_httpRequestCreated(object sender, httpRequestCreatedEventArgs e) {

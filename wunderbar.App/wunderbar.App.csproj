@@ -31,7 +31,7 @@
     <ProductName>wunderbar</ProductName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.0.5.0</ApplicationVersion>
+    <ApplicationVersion>0.0.6.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -82,6 +82,9 @@
   <PropertyGroup>
     <ManifestTimestampUrl>http://timestamp.verisign.com/scripts/timstamp.dll</ManifestTimestampUrl>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification">
       <HintPath>..\wunderbar.Libs\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
@@ -92,6 +95,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -116,9 +120,11 @@
     <Compile Include="Core\syncController.cs" />
     <Compile Include="Core\trayContextTypes.cs" />
     <Compile Include="Data\applicationSettings.cs" />
+    <Compile Include="Data\Behaviors\IgnoreMouseWheelBehavior.cs" />
     <Compile Include="Data\Converter\booleanConverter.cs" />
     <Compile Include="Data\Converter\prettyDateConverter.cs" />
     <Compile Include="Data\Converter\prettyDateViewConverter.cs" />
+    <Compile Include="Data\Converter\inverseVisibilityConverter.cs" />
     <Compile Include="Data\Converter\unixDateTimeConverter.cs" />
     <Compile Include="Data\Converter\visibilityConverter.cs" />
     <Compile Include="Ui\Dialogs\aboutDialog.xaml.cs">
@@ -130,14 +136,8 @@
     <Compile Include="Ui\Dialogs\flyoutWindow.xaml.cs">
       <DependentUpon>flyoutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Dialogs\listDialog.xaml.cs">
-      <DependentUpon>listDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Ui\Dialogs\settingsDialog.xaml.cs">
       <DependentUpon>settingsDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Ui\Dialogs\taskDialog.xaml.cs">
-      <DependentUpon>taskDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ui\Dialogs\trayWindow.xaml.cs">
       <DependentUpon>trayWindow.xaml</DependentUpon>
@@ -145,6 +145,12 @@
     <Compile Include="Ui\FlyoutViews\IView.cs" />
     <Compile Include="Ui\FlyoutViews\ListsView.xaml.cs">
       <DependentUpon>ListsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\FlyoutViews\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\FlyoutViews\ShareListView.xaml.cs">
+      <DependentUpon>ShareListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ui\FlyoutViews\ShowViewEventArgs.cs" />
     <Compile Include="Ui\FlyoutViews\TasksView.xaml.cs">
@@ -165,14 +171,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Ui\Dialogs\listDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Ui\Dialogs\loginDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -181,14 +179,7 @@
     <Compile Include="Core\baseController.cs" />
     <Compile Include="Core\trayController.cs" />
     <Compile Include="Data\baseModel.cs" />
-    <Compile Include="Ui\Dialogs\loginDialog.xaml.cs">
-      <DependentUpon>loginDialog.xaml</DependentUpon>
-    </Compile>
     <Page Include="Ui\Dialogs\settingsDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Ui\Dialogs\taskDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,6 +190,14 @@
     <Page Include="Ui\FlyoutViews\ListsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\FlyoutViews\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\FlyoutViews\ShareListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Ui\FlyoutViews\TasksView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -314,16 +313,115 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
       <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
+      <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\not-shared.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Gfx\Images\Tasks\not-important.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="de\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="en\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="es\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="fr\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="it\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="ja\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="ko\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="zh-Hans\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="zh-Hant\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Debug goto :exit
 "$(FrameworkSDKDir)bin\signtool" sign /a /du "http://coffeeInjection.com" /t "http://timestamp.verisign.com/scripts/timstamp.dll" "$(TargetPath)"
+"$(FrameworkSDKDir)bin\signtool" sign /a /du "http://coffeeInjection.com" /t "http://timestamp.verisign.com/scripts/timstamp.dll" "$(ProjectDir)\obj\$(PlatformName)\$(ConfigurationName)\$(TargetFileName)"
 :exit</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -333,4 +431,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="BeforePublish">
+    <Exec Condition="'$(PostBuildEvent)' != ''" WorkingDirectory="$(OutDir)" Command="$(PostBuildEvent)" />
+  </Target>
 </Project>

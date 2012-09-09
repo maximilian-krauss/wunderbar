@@ -62,35 +62,10 @@ namespace wunderbar.App.Ui.FlyoutViews {
 		private void TextBox_KeyUp(object sender, KeyEventArgs e) {
 			var s = sender as TextBox;
 			if (s != null && e.Key == Key.Return && !string.IsNullOrWhiteSpace(s.Text)) {
-				Session.wunderClient.Tasks.addOrUpdateTask(ParseTask(s.Text));
+				Session.wunderClient.Tasks.addOrUpdateTask(Session.createTaskFromString(s.Text, _list.Id));
 				s.Text = string.Empty;
 				UpdateBinding();
 			}
-		}
-		private taskType ParseTask(string taskText) {
-			var task = new taskType {
-			                        	listId = _list.Id,
-			                        	Id = new Random(Environment.TickCount).Next(-99999, -100),
-										userId = Session.wunderClient.userId
-			                        };
-
-			if (taskText.StartsWith("*") || taskText.StartsWith("!")) {
-				task.Important = 1;
-				taskText = taskText.Substring(1).Trim();
-			}
-
-			var knownDates = new Dictionary<string, DateTime>
-			                 {{"today", DateTime.Now.Date}, {"tomorrow", DateTime.Now.AddDays(1).Date}};
-			if (taskText.Contains(" ")) {
-				var lastWord = taskText.Substring(taskText.LastIndexOf(' ') + 1).ToLowerInvariant();
-				if (knownDates.ContainsKey(lastWord)) {
-					task.dueDate = knownDates[lastWord];
-					taskText = taskText.Substring(0, taskText.LastIndexOf(' ')).Trim();
-				}
-			}
-
-			task.Name = taskText;
-			return task;
 		}
 	}
 }

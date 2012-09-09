@@ -1,46 +1,68 @@
 ﻿<UserControl x:Class="wunderbar.App.Ui.FlyoutViews.ListsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:i="clr-namespace:wunderbar.App.Data.Behaviors"
 			 xmlns:local="clr-namespace:wunderbar.App.Data.Converter"
-             mc:Ignorable="d" 
+             xmlns:Interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
 		<local:visibilityConverter x:Key="visibleConverter" />
+		<local:inverseVisibilityConverter x:Key="invVisibleConverter" />
 	</UserControl.Resources>
-	<ListBox Name="lstTasks" HorizontalContentAlignment="Stretch"
+	<ScrollViewer>
+		<StackPanel Orientation="Vertical">
+			<xctk:WatermarkTextBox Watermark="Enter a new task and press return..." KeyUp="WatermarkTextBox_KeyUp"  Margin="5" />
+			<ListBox Name="lstTasks" HorizontalContentAlignment="Stretch"
 					 ItemContainerStyle="{StaticResource SimpleListBoxItem}"
 					 BorderThickness="0" x:FieldModifier="private">
-		<ListBox.ItemTemplate>
-			<DataTemplate>
-				<Border BorderBrush="#D7D7D7" Margin="2 2" BorderThickness="1 1 1 2" CornerRadius="4" Cursor="Hand">
-					<Border.Background>
-						<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-							<GradientStop Color="#F6F6F6" Offset="0.0" />
-							<GradientStop Color="#E7E7E7" Offset="1.5" />
-						</LinearGradientBrush>
-					</Border.Background>
-					<Grid Margin="5">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="*" />
-						</Grid.RowDefinitions>
-						<TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" Padding="2 0" FontSize="12" Foreground="#545454" />
-						<Border Grid.Row="0" Grid.Column="1" BorderBrush="#D7D7D7" BorderThickness="1" CornerRadius="4" Background="#FFFFFF">
-							<StackPanel Orientation="Horizontal" Margin="6 1">
-								<TextBlock Text="{Binding taskCount}" />
-								<TextBlock Visibility="{Binding dueTaskCount, Converter={StaticResource visibleConverter}}"
+				<Interactivity:Interaction.Behaviors>
+					<i:IgnoreMouseWheelBehavior />
+				</Interactivity:Interaction.Behaviors>
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Border BorderBrush="#D7D7D7" Margin="2 2" BorderThickness="1 1 1 2" CornerRadius="4" Cursor="Hand">
+							<Border.Background>
+								<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+									<GradientStop Color="#F6F6F6" Offset="0.0" />
+									<GradientStop Color="#E7E7E7" Offset="1.5" />
+								</LinearGradientBrush>
+							</Border.Background>
+							<Grid Margin="5 3">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="*" />
+								</Grid.RowDefinitions>
+								<TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" Padding="2 0" FontSize="12" Foreground="#545454" />
+								<Button Grid.Row="0" Grid.Column="1" Margin="6 1" BorderThickness="0" VerticalAlignment="Center"
+										Style="{StaticResource NoChromeButton}" Visibility="{Binding Shared, Converter={StaticResource invVisibleConverter}}"
+										ToolTip="This list is not shared! Click here to edit." Click="OpenSharingSettings_Click">
+									<Image Source="/Gfx/Images/not-shared.png" />
+								</Button>
+								<Button Grid.Row="0" Grid.Column="1" Margin="6 1" BorderThickness="0" VerticalAlignment="Center"
+										Style="{StaticResource NoChromeButton}" Visibility="{Binding Shared, Converter={StaticResource visibleConverter}}"
+										ToolTip="This list is shared! Click here to edit." Click="OpenSharingSettings_Click">
+									<Image Source="/Gfx/Images/shared.png" />
+								</Button>
+								<Border Grid.Row="0" Grid.Column="2" BorderBrush="#D7D7D7" BorderThickness="1" CornerRadius="4" Background="#FFFFFF">
+									<StackPanel Orientation="Horizontal" Margin="6 1">
+										<TextBlock Text="{Binding taskCount}" />
+										<TextBlock Visibility="{Binding dueTaskCount, Converter={StaticResource visibleConverter}}"
 										   Text="{Binding dueTaskCount}" Foreground="Red" FontWeight="Bold"
 										   Padding="5 0 0 0"/>
-							</StackPanel>
+									</StackPanel>
+								</Border>
+							</Grid>
 						</Border>
-					</Grid>
-				</Border>
-			</DataTemplate>
-		</ListBox.ItemTemplate>
-	</ListBox>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</StackPanel>
+	</ScrollViewer>
 </UserControl>

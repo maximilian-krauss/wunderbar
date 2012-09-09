@@ -21,13 +21,17 @@ namespace wunderbar.App.Ui.FlyoutViews {
 		public event EventHandler<ShowViewEventArgs> ShowView;
 
 		public string Title {
-			get { return "Lists"; }
+			get { return "wunderbar - overview"; }
 		}
 
 		public applicationSession Session {
 			get; set; }
 
 		public void ViewLoaded(object args) {
+			UpdateBinding();
+		}
+
+		private void UpdateBinding() {
 			//TODO: Find a better solution for this
 			var lists = Session.wunderClient.Lists.Where(l => l.Deleted == 0).OrderBy(l => l.Position);
 			lists.ToList().ForEach(l => {
@@ -54,5 +58,23 @@ namespace wunderbar.App.Ui.FlyoutViews {
 		public Action Action { get; set; }
 
 		#endregion
+
+		private void OpenSharingSettings_Click(object sender, EventArgs e) {
+			var list = ((ListBoxItem)lstTasks.ContainerFromElement((Button)sender)).Content;
+			if(list != null && ShowView != null)
+				ShowView(this, new ShowViewEventArgs(new ShareListView(), list));
+		}
+
+		private void WatermarkTextBox_KeyUp(object sender, KeyEventArgs e) {
+			var s = sender as TextBox;
+			if (s != null && e.Key == Key.Return && !string.IsNullOrWhiteSpace(s.Text)) {
+				var task = Session.createTaskFromString(s.Text);
+				if (task != null) {
+					Session.wunderClient.Tasks.addOrUpdateTask(task);
+					s.Text = string.Empty;
+					UpdateBinding();
+				}
+			}
+		}
 	}
 }

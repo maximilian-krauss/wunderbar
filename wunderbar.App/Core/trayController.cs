@@ -56,10 +56,7 @@ namespace wunderbar.App.Core {
 			if (_animationTimer.Enabled) //Do nothing when an operation is running
 				return;
 
-			if(Session.wunderClient.loggedIn)
-				Session.showFlyout();
-			else
-				Session.Login();
+			Session.showFlyout();
 		}
 
 		void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

@@ -1,6 +1,14 @@
 Changelog
 =========
 
+### wunderbar 1.0 b6
+* [Feature] Deleting tasks is now possible!
+* [Feature] Icon for shared lists (again)
+* [Bug] Scrolling with mouse wheel didn't work properly in flyout window
+* [Feature] Loginview moved to flyout
+* [Feature] Implemented sharing: Share/unshare a list, add/remove dudes from shared lists.
+* [Feature] Several UI improvements
+
 ### wunderbar 1.0 b5
 * [Feature] Huge UI improvements
 * [Feature] New flyout window

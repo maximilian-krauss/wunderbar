@@ -12,8 +12,8 @@ namespace wunderbar.Test {
 
 			var client = new wunderClient {
 			                              	localStorageDirectory =
-			                              		Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-			                              		             "wunderbar")
+			                              		Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"wunderbar"),
+												enforceSSLSecurity = false
 			                              };
 
 			//Test login
@@ -48,13 +48,13 @@ namespace wunderbar.Test {
 			client.Synchronize();*/
 
 			//Fetch shared addresses
-			Console.WriteLine("client.sharedWith");
+			/*Console.WriteLine("client.sharedWith");
 			foreach (var list in client.Lists.Where(l => l.Shared == 1)) {
 				var addresses = client.sharedWith(list);
 				if(addresses!=null)
 					addresses.ForEach(Console.WriteLine);
-			}
-
+			}*/
+			
 			Console.ReadKey();
 		}
 	}

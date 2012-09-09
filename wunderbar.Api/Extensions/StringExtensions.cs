@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.IO;
 using System;
+using System.Text.RegularExpressions;
 
 namespace wunderbar.Api.Extensions {
 	public static class StringExtensions {
@@ -19,6 +20,10 @@ namespace wunderbar.Api.Extensions {
 					ret += a.ToString("x");
 			}
 			return ret;
+		}
+
+		public static bool isEmail(this string text) {
+			return Regex.IsMatch(text, @"^([A-Za-z0-9\+_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$");
 		}
 
 		public static string aesEncrypt(this string value, byte[] key) {

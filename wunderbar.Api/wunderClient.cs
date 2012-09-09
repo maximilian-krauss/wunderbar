@@ -165,7 +165,7 @@ namespace wunderbar.Api {
 		}
 
 		/// <summary>Returns a list of email addresses with which the provided list is shared.</summary>
-		public List<string> sharedWith(listType list) {
+		public List<string> listSharedWith(listType list) {
 			if(!_loggedIn)
 				throw new wunderException("Cannot fetch addresses: User isn't logged in.");
 			if(list.Shared==0)
@@ -183,6 +183,42 @@ namespace wunderbar.Api {
 			return response.eMails;
 		}
 		
+		public void shareListWith(listType list, string email) {
+			var request = new shareWithRequest {
+				eMail = _credentials.eMail,
+				Password = _credentials.Password,
+				listId = list.Id,
+				Add = email
+			};
+			var response = _httpClient.httpPost<shareWithRequest, baseResponse>(request);
+			if(response.statusCode != statusCodes.SHARE_SUCCESS)
+				throw new wunderRequestException(response.statusCode,"Failed to share list");
+
+		}
+
+		public void unshareList(listType list, string email) {
+			var request = new unshareRequest {
+				eMail = _credentials.eMail,
+				Password = _credentials.Password,
+				listId = list.Id,
+				Delete = email
+			};
+			var response = _httpClient.httpPost<unshareRequest, baseResponse>(request);
+			if(response.statusCode != statusCodes.SHARE_SUCCESS)
+				throw new wunderRequestException(response.statusCode, string.Format("Failed to unshare list with {0}", email));
+		}
+
+		public void unshareListCompletely(listType list) {
+			var request = new unshareCompletelyRequest {
+				                                           eMail = _credentials.eMail,
+				                                           Password = _credentials.Password,
+				                                           listId = list.Id
+			                                           };
+			var response = _httpClient.httpPost<unshareCompletelyRequest, baseResponse>(request);
+			if(response.statusCode != statusCodes.SHARE_SUCCESS)
+				throw new wunderRequestException(response.statusCode, string.Format("Failed to unshare list"));
+		}
+
 		/// <summary>Writes Lists and Tasks to the LocalStorage in the FileSystem.</summary>
 		private void writeLocalStorage() {
 

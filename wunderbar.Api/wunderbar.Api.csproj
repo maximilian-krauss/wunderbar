@@ -70,8 +70,11 @@
     <Compile Include="Requests\baseRequest.cs" />
     <Compile Include="Requests\loginRequest.cs" />
     <Compile Include="Requests\sharedWithRequest.cs" />
+    <Compile Include="Requests\shareWithRequest.cs" />
     <Compile Include="Requests\syncStep1Request.cs" />
     <Compile Include="Requests\syncStep2Request.cs" />
+    <Compile Include="Requests\unshareCompletelyRequest.cs" />
+    <Compile Include="Requests\unshareRequest.cs" />
     <Compile Include="Responses\baseResponse.cs" />
     <Compile Include="Responses\sharedWithResponse.cs" />
     <Compile Include="Responses\syncStep1Response.cs" />
@@ -98,4 +101,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="BeforePublish">
+    <Exec Condition="'$(PostBuildEvent)' != ''" WorkingDirectory="$(OutDir)" Command="$(PostBuildEvent)" />
+  </Target>
 </Project>

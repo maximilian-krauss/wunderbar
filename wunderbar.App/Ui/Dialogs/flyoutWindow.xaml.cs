@@ -13,12 +13,12 @@ namespace wunderbar.App.Ui.Dialogs {
 		public flyoutWindow(applicationSession session) : this(session, null, null) {
 		}
 		public flyoutWindow(applicationSession session, IView view, object argument) {
+			DataContext = session.Settings;
 			InitializeComponent();
 			_session = session;
 			var desktopWorkingArea = SystemParameters.WorkArea;
 			Left = desktopWorkingArea.Right - (Width + 20);
 			Top = desktopWorkingArea.Bottom - (Height + 20);
-
 			if (view != null)
 				ShowView(view, argument);
 			else

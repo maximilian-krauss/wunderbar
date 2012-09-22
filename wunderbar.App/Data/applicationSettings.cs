@@ -27,6 +27,8 @@ namespace wunderbar.App.Data {
 		private bool _hotkeyNewTask;
 		private bool _hotkeySync;
 		private bool _enforceSSLSecurity;
+		private double _flyoutHeight;
+		private double _flyoutWidth;
 
 		static applicationSettings() {
 			_token = Assembly.GetExecutingAssembly().GetName().GetPublicKey();
@@ -39,6 +41,8 @@ namespace wunderbar.App.Data {
 			_showDueTasksInTrayIcon = true;
 			_showDueTasksOnTop = true;
 			_enforceSSLSecurity = true;
+			_flyoutHeight = 350;
+			_flyoutWidth = 300;
 		}
 
 		/// <summary>Gets or sets the eMail-Address for Wunderlist.</summary>
@@ -73,6 +77,9 @@ namespace wunderbar.App.Data {
 
 		/// <summary>Gets or sets whether the public key of the SSL-certificate should be verified or not.</summary>
 		public bool enforceSSLSecurity { get { return _enforceSSLSecurity; } set { _enforceSSLSecurity = value; onPropertyChanged("enforceSSLSecurity"); } }
+
+		public double FlyoutWidth { get { return _flyoutWidth; } set { _flyoutWidth = value; onPropertyChanged("FlyoutWidth"); } }
+		public double FlyoutHeight { get { return _flyoutHeight; } set { _flyoutHeight = value; onPropertyChanged("FlyoutHeight"); } }
 
 		/// <summary>Gets or sets whether wunderbar should run on startup or not.</summary>
 		[XmlIgnore]

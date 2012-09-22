@@ -1,7 +1,7 @@
 ﻿<Window x:Class="wunderbar.App.Ui.Dialogs.flyoutWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="flyoutWindow" Height="350" Width="300"
+        Title="flyoutWindow" Height="{Binding FlyoutHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="{Binding FlyoutWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 		ShowInTaskbar="False" WindowStyle="None"
 		WindowStartupLocation="Manual"
 		Deactivated="Window_Deactivated">

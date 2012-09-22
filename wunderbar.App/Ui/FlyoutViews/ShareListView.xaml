@@ -19,7 +19,7 @@
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<Button Style="{StaticResource WarnButton}" Grid.Row="0" Visibility="{Binding Shared, Converter={StaticResource inverseVisible}}" Click="Share_Click">Share this list with others</Button>
+		<Button Style="{StaticResource OkButton}" Grid.Row="0" Visibility="{Binding Shared, Converter={StaticResource inverseVisible}}" Click="Share_Click">Share this list with others</Button>
 		<xctk:BusyIndicator Grid.Row="1" IsBusy="False" Name="bsy" Margin="0 0 0 0" Visibility="{Binding Shared, Converter={StaticResource visibleConverter}}"
 		                    x:FieldModifier="private">
 			<Grid>
